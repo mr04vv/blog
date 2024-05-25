@@ -1,0 +1,39 @@
+name: "Lint and Typecheck"
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    name: setup bun
+    steps:
+      - uses: ./.github/actions/setup_bun
+
+  lint:
+    name: Check formatting
+    timeout-minutes: 15
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ./.github/actions/setup_bun
+
+      - name: Run biome lint
+        run: bun run lint
+
+  typecheck:
+    name: Type check
+    timeout-minutes: 15
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ./.github/actions/setup_bun
+
+      - name: Run typecheck
+        run: bun run typecheck
