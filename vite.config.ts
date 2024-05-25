@@ -26,5 +26,9 @@ export default defineConfig(({ mode }) => {
         remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
       }),
     ],
+    build: {
+      assetsDir: "static",
+      ssrEmitAssets: true,
+    },
   };
 });
