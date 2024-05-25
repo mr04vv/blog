@@ -3,11 +3,6 @@ name: setup bun
 runs:
   using: "composite"
   steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 2
-
     - name: Setup bun environment
       uses: oven-sh/setup-bun@v1
       with:
