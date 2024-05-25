@@ -1,7 +1,5 @@
 name: setup bun
 
-inputs:
-
 runs:
   using: "composite"
   steps:
