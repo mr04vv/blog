@@ -8,3 +8,21 @@ markdown 形式で書けるからすごい書きやすいね〜〜〜
 _斜体も書きやすい_
 
 ### 見出しも書きやすいね！
+
+## シンタックスハイライトがすごい！
+
+```tsx showLineNumbers title="sample.tsx" {5,8-9} /setFloating/#s /refs/#v /adapter/
+import pages from "@hono/vite-cloudflare-pages";
+import adapter from "@hono/vite-dev-server/cloudflare";
+
+function MyComponent() {
+  const { refs, floatingStyles } = useFloating();
+
+  return (
+    <>
+      <div ref={refs.setReference} />
+      <div ref={refs.setFloating} style={floatingStyles} />
+    </>
+  );
+}
+```
