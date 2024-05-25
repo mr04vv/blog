@@ -12,20 +12,19 @@ export default defineConfig(({ mode }) => {
     return {
       plugins: [client()],
     };
-  } else {
-    return {
-      plugins: [
-        honox({
-          devServer: {
-            adapter,
-          },
-        }),
-        pages(),
-        mdx({
-          jsxImportSource: "hono/jsx",
-          remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
-        }),
-      ],
-    };
   }
+  return {
+    plugins: [
+      honox({
+        devServer: {
+          adapter,
+        },
+      }),
+      pages(),
+      mdx({
+        jsxImportSource: "hono/jsx",
+        remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      }),
+    ],
+  };
 });
