@@ -21,7 +21,7 @@ jobs:
       - uses: ./.github/actions/setup_bun
 
   lint:
-    name: Check formatting
+    name: Lint(Biome)
     timeout-minutes: 15
     needs: setup
     runs-on: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
         run: bun run lint
 
   typecheck:
-    name: Type check
+    name: Type Check
     timeout-minutes: 15
     needs: setup
     runs-on: ubuntu-latest
