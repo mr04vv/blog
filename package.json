@@ -9,17 +9,18 @@
   },
   "private": true,
   "dependencies": {
-    "@mdx-js/rollup": "^3.0.1",
-    "hono": "^4.3.8",
-    "honox": "^0.1.17",
-    "remark-frontmatter": "^5.0.0",
-    "remark-mdx-frontmatter": "^4.0.0"
+    "@mdx-js/rollup": "3.0.1",
+    "biome": "0.3.3",
+    "hono": "4.3.8",
+    "honox": "0.1.17",
+    "remark-frontmatter": "5.0.0",
+    "remark-mdx-frontmatter": "4.0.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240403.0",
-    "@hono/vite-cloudflare-pages": "^0.4.0",
-    "@hono/vite-dev-server": "^0.12.1",
-    "vite": "^5.2.11",
-    "wrangler": "^3.47.0"
+    "@cloudflare/workers-types": "4.20240403.0",
+    "@hono/vite-cloudflare-pages": "0.4.0",
+    "@hono/vite-dev-server": "0.12.1",
+    "vite": "5.2.11",
+    "wrangler": "3.47.0"
   }
 }
