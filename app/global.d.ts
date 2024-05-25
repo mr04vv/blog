@@ -6,13 +6,11 @@ type Head = {
 
 declare module "hono" {
   interface Env {
-    Variables: {};
-    Bindings: {};
+    Variables: object;
+    Bindings: object;
   }
-  interface ContextRenderer {
-    (
-      content: string | Promise<string>,
-      head?: Head,
-    ): Response | Promise<Response>;
-  }
+  type ContextRenderer = (
+    content: string | Promise<string>,
+    head?: Head
+  ) => Response | Promise<Response>;
 }
