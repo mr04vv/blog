@@ -1,15 +1,16 @@
-import {} from 'hono'
+import {} from "hono";
 
 type Head = {
-  title?: string
-}
+  title?: string;
+};
 
-declare module 'hono' {
+declare module "hono" {
   interface Env {
-    Variables: {}
-    Bindings: {}
+    Variables: object;
+    Bindings: object;
   }
-  interface ContextRenderer {
-    (content: string | Promise<string>, head?: Head): Response | Promise<Response>
-  }
+  type ContextRenderer = (
+    content: string | Promise<string>,
+    head?: Head
+  ) => Response | Promise<Response>;
 }

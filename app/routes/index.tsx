@@ -11,6 +11,6 @@ export default createRoute((c) => {
     <div class={className}>
       <h1>{name}</h1>
     </div>,
-    { title: name }
+    { title: name },
   );
 });

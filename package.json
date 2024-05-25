@@ -5,12 +5,18 @@
     "dev": "vite",
     "build": "vite build --mode client && vite build",
     "preview": "wrangler pages dev",
-    "deploy": "$npm_execpath run build && wrangler pages deploy"
+    "deploy": "$npm_execpath run build && wrangler pages deploy",
+    "fmt": "biome format --write ./app",
+    "fmt-check": "biome format ./app",
+    "lint": "biome lint ./app",
+    "lint-fix": "biome lint --apply ./app",
+    "lint-fix-unsafe": "biome lint --apply-unsafe ./app",
+    "typecheck": "tsc --noEmit"
   },
   "private": true,
   "dependencies": {
+    "@biomejs/biome": "1.7.3",
     "@mdx-js/rollup": "3.0.1",
-    "biome": "0.3.3",
     "hono": "4.3.11",
     "honox": "0.1.18",
     "remark-frontmatter": "5.0.0",
