@@ -6,6 +6,11 @@ import { defineConfig } from "vite";
 import mdx from "@mdx-js/rollup";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
+import rehypePrettyCode from "rehype-pretty-code";
+import remarkParse from "remark-parse";
+import theme from "./assets/theme.json";
 
 export default defineConfig(({ mode }) => {
   if (mode === "client") {
@@ -23,7 +28,13 @@ export default defineConfig(({ mode }) => {
       pages(),
       mdx({
         jsxImportSource: "hono/jsx",
-        remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+        remarkPlugins: [
+          remarkFrontmatter,
+          remarkMdxFrontmatter,
+          remarkParse,
+          remarkRehype,
+        ],
+        rehypePlugins: [rehypeStringify, () => rehypePrettyCode({ theme })],
       }),
     ],
     build: {
