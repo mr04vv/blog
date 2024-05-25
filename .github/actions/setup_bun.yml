@@ -1,0 +1,30 @@
+name: setup bun
+
+inputs:
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    - name: Setup bun environment
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: 1.0.31
+
+    - name: Cache bun packages
+      uses: actions/cache@v4
+      env:
+        cache-name: cache-bun-packages
+      with:
+        path: ~/.bun/install/cache
+        key: ${{ runner.os }}-${{ matrix.bun }}-bun-${{ hashFiles('**/bun.lockb') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.bun }}-bun-
+
+    - name: Install dependencies
+      run: bun install --frozen-lockfile
+      shell: bash
