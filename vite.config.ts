@@ -1,15 +1,15 @@
 import pages from "@hono/vite-cloudflare-pages";
 import adapter from "@hono/vite-dev-server/cloudflare";
+import mdx from "@mdx-js/rollup";
 import honox from "honox/vite";
 import client from "honox/vite/client";
-import { defineConfig } from "vite";
-import mdx from "@mdx-js/rollup";
+import rehypePrettyCode from "rehype-pretty-code";
+import rehypeStringify from "rehype-stringify";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
-import remarkRehype from "remark-rehype";
-import rehypeStringify from "rehype-stringify";
-import rehypePrettyCode from "rehype-pretty-code";
 import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import { defineConfig } from "vite";
 import theme from "./assets/theme.json";
 
 export default defineConfig(({ mode }) => {
@@ -34,7 +34,11 @@ export default defineConfig(({ mode }) => {
           remarkParse,
           remarkRehype,
         ],
-        rehypePlugins: [rehypeStringify, () => rehypePrettyCode({ theme })],
+        rehypePlugins: [
+          rehypeStringify,
+          // @ts-ignore
+          () => rehypePrettyCode({ theme: theme }),
+        ],
       }),
     ],
     build: {
