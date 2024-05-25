@@ -11,6 +11,7 @@ concurrency:
 jobs:
   setup:
     name: setup bun
+    runs-on: ubuntu-latest
     steps:
       - uses: ./.github/actions/setup_bun
 
