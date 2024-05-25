@@ -6,11 +6,15 @@ type Head = {
 
 declare module "hono" {
   interface Env {
-    Variables: object;
-    Bindings: object;
+    // biome-ignore lint/complexity/noBannedTypes: <explanation>
+    Variables: {};
+    // biome-ignore lint/complexity/noBannedTypes: <explanation>
+    Bindings: {};
   }
-  type ContextRenderer = (
-    content: string | Promise<string>,
-    head?: Head
-  ) => Response | Promise<Response>;
+  interface ContextRenderer {
+    // biome-ignore lint/style/useShorthandFunctionType: <explanation>
+    (content: string | Promise<string>, head?: Head):
+      | Response
+      | Promise<Response>;
+  }
 }
