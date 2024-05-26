@@ -105,3 +105,16 @@
   @apply bg-gray-100 !important;
 }
 
+.source {
+  @apply text-right italic
+}
+
+
+.data-footnote-backref {
+  @apply no-underline text-sm;
+  font-family: Hiragino Kaku Gothic ProN;
+}
+
+.sr-only {
+  @apply border-t border-gray-300 my-3;
+}
