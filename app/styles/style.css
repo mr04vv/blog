@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 .markdown {
-  @apply text-gray-900 leading-normal break-words box-border;
+  @apply text-gray-900 break-words box-border tracking-wide antialiased;
 }
 
 .markdown > * + * {
@@ -25,27 +25,31 @@
 }
 
 .markdown a {
-  @apply text-blue-600 font-semibold;
+  @apply  underline decoration-dotted decoration-gray-400;
 }
 
 .markdown strong a {
   @apply font-bold;
 }
 
+.markdown p {
+  @apply text-base leading-7;
+}
+
 .markdown h1 {
-  @apply leading-tight border-b text-4xl font-semibold mb-4 mt-6 pb-2;
+  @apply leading-tight text-4xl  mb-4 mt-6 pb-2;
 }
 
 .markdown h2 {
-  @apply leading-tight border-b text-2xl font-semibold mb-4 mt-6 pb-2;
+  @apply leading-tight text-2xl  mb-4 mt-6 pb-2;
 }
 
 .markdown h3 {
-  @apply leading-snug text-lg font-semibold mb-4 mt-6;
+  @apply leading-snug text-lg mb-4 mt-6;
 }
 
 .markdown h4 {
-  @apply leading-none text-base font-semibold mb-4 mt-6;
+  @apply leading-none text-base mb-4 mt-6;
 }
 
 .markdown h5 {
@@ -61,7 +65,7 @@
 }
 
 .markdown code {
-  @apply font-mono text-sm inline bg-gray-200 rounded px-1 py-1;
+  @apply font-mono text-sm inline bg-gray-200 text-gray-600 rounded px-1.5 py-1 tracking-wide;
 }
 
 .markdown pre {
@@ -100,3 +104,4 @@
 .markdown .highlight pre {
   @apply bg-gray-100 !important;
 }
+

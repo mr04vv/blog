@@ -15,7 +15,9 @@ export default jsxRenderer(({ children, title }) => {
         <Style />
         <link href={styles} rel="stylesheet" />
       </head>
-      <article class={"markdown"}>{children}</article>
+      <body class={"flex justify-center"}>
+        <main class={"max-w-2xl w-screen px-4"}>{children}</main>
+      </body>
     </html>
   );
 });
