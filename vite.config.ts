@@ -6,6 +6,7 @@ import client from "honox/vite/client";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeStringify from "rehype-stringify";
 import remarkFrontmatter from "remark-frontmatter";
+import remarkGfm from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
@@ -18,6 +19,8 @@ export default defineConfig(({ mode }) => {
       plugins: [client()],
     };
   }
+
+  const rehype = () => remarkRehype({ footnoteBackContent: "↩" });
   return {
     plugins: [
       honox({
@@ -29,16 +32,21 @@ export default defineConfig(({ mode }) => {
       mdx({
         jsxImportSource: "hono/jsx",
         remarkPlugins: [
+          [
+            remarkRehype,
+            {
+              footnoteBackContent: "↩︎",
+              footnoteLabel: " ",
+              footnoteLabelTagName: "hr",
+              footnoteBackLabel: "Back to reference 1",
+            },
+          ],
           remarkFrontmatter,
           remarkMdxFrontmatter,
           remarkParse,
-          remarkRehype,
+          remarkGfm,
         ],
-        rehypePlugins: [
-          rehypeStringify,
-          // @ts-ignore
-          () => rehypePrettyCode({ theme: theme }),
-        ],
+        rehypePlugins: [rehypeStringify, [rehypePrettyCode, { theme: theme }]],
       }),
     ],
     build: {
