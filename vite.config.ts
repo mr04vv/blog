@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
         output: {
           assetFileNames: (assetInfo) => {
             if (assetInfo.name === "style.css") return "styles/style.css";
-            return assetInfo.name;
+            return assetInfo.name ?? "";
           },
         },
       },

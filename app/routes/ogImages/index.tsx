@@ -101,6 +101,7 @@ export default createRoute(
             },
           ],
         },
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       } as any,
       {
         width: 1200,
