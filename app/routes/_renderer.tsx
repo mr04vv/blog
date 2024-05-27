@@ -13,7 +13,11 @@ export default jsxRenderer(({ children, title }) => {
         <link rel="icon" href="/favicon.ico" />
         <Script src="/app/client.ts" async />
         <Style />
-        <link href={styles} rel="stylesheet" />
+        {import.meta.env.PROD ? (
+          <link href="/styles/style.css" rel="stylesheet" />
+        ) : (
+          <link href={styles} rel="stylesheet" />
+        )}
       </head>
       <body class={"flex justify-center"}>
         <main class={"max-w-2xl w-screen px-4"}>{children}</main>
