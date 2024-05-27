@@ -16,6 +16,7 @@
   "private": true,
   "dependencies": {
     "@biomejs/biome": "1.7.3",
+    "@hono/vite-ssg": "0.1.0",
     "@mdx-js/rollup": "3.0.1",
     "@resvg/resvg-js": "2.6.2",
     "hono": "4.3.11",

@@ -1,5 +1,6 @@
 import pages from "@hono/vite-cloudflare-pages";
 import adapter from "@hono/vite-dev-server/cloudflare";
+import ssg from "@hono/vite-ssg";
 import mdx from "@mdx-js/rollup";
 import honox from "honox/vite";
 import client from "honox/vite/client";
@@ -16,20 +17,15 @@ import theme from "./assets/theme.json";
 export default defineConfig(({ mode }) => {
   if (mode === "client") {
     return {
-      ssr: {
-        external: ["satori", "@resvg/resvg-js"],
-      },
       plugins: [client()],
     };
   }
 
-  const rehype = () => remarkRehype({ footnoteBackContent: "↩" });
+  const entry = "./app/server.ts";
+
   return {
-    ssr: {
-      external: ["satori", "@resvg/resvg-js"],
-      noExternal: true,
-    },
     plugins: [
+      ssg({ entry }),
       honox({
         devServer: {
           adapter,
@@ -59,6 +55,18 @@ export default defineConfig(({ mode }) => {
     build: {
       assetsDir: "static",
       ssrEmitAssets: true,
+      rollupOptions: {
+        input: ["/app/styles/style.css"],
+        output: {
+          assetFileNames: (assetInfo) => {
+            if (assetInfo.name === "style.css") return "styles/style.css";
+            return assetInfo.name;
+          },
+        },
+      },
+    },
+    ssr: {
+      external: ["satori", "@resvg/resvg-js"],
     },
   };
 });
