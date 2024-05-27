@@ -16,12 +16,19 @@ import theme from "./assets/theme.json";
 export default defineConfig(({ mode }) => {
   if (mode === "client") {
     return {
+      ssr: {
+        external: ["satori", "@resvg/resvg-js"],
+      },
       plugins: [client()],
     };
   }
 
   const rehype = () => remarkRehype({ footnoteBackContent: "↩" });
   return {
+    ssr: {
+      external: ["satori", "@resvg/resvg-js"],
+      noExternal: true,
+    },
     plugins: [
       honox({
         devServer: {

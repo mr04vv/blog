@@ -17,6 +17,7 @@
   "dependencies": {
     "@biomejs/biome": "1.7.3",
     "@mdx-js/rollup": "3.0.1",
+    "@resvg/resvg-js": "2.6.2",
     "hono": "4.3.11",
     "honox": "0.1.18",
     "rehype-highlight": "7.0.0",
@@ -26,7 +27,8 @@
     "remark-gfm": "4.0.0",
     "remark-mdx-frontmatter": "4.0.0",
     "remark-parse": "11.0.0",
-    "remark-rehype": "11.1.0"
+    "remark-rehype": "11.1.0",
+    "satori": "0.10.13"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20240512.0",
