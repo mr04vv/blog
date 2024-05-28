@@ -21,7 +21,7 @@
 }
 
 .markdown strong {
-  @apply bold;
+  @apply font-bold;
 }
 
 .markdown a {
