@@ -20,7 +20,7 @@
     "@mdx-js/rollup": "3.0.1",
     "@resvg/resvg-js": "2.6.2",
     "budoux": "0.6.2",
-    "hono": "4.3.11",
+    "hono": "4.4.0",
     "honox": "0.1.18",
     "rehype-highlight": "7.0.0",
     "rehype-pretty-code": "0.13.2",
@@ -33,7 +33,7 @@
     "satori": "0.10.13"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20240512.0",
+    "@cloudflare/workers-types": "4.20240524.0",
     "@hono/vite-cloudflare-pages": "0.4.0",
     "@hono/vite-dev-server": "0.12.1",
     "@types/prompts": "2.4.9",
