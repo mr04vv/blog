@@ -5,7 +5,7 @@ export default jsxRenderer(({ children, title, frontmatter, Layout }) => {
   const current = c.req.path;
   const entryName = current.split("/")[2];
   return (
-    <Layout entryName={entryName}>
+    <Layout entryName={entryName} title={frontmatter?.title}>
       <article class={"markdown"}>{children}</article>
     </Layout>
   );
