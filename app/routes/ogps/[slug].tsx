@@ -89,7 +89,8 @@ export default createRoute(
       },
     );
 
-    const body = new Resvg(svg).render().asPng();
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const body: any = new Resvg(svg).render().asPng();
 
     c.header("Content-Type", "image/png");
     return c.body(body);
