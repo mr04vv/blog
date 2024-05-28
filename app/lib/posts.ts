@@ -1,3 +1,4 @@
+import type { JSX } from "hono/jsx/jsx-runtime";
 import type { MDXProps } from "mdx/types";
 import type { Frontmatter } from "../types";
 import { getEntryNameFromPath } from "../utils";
