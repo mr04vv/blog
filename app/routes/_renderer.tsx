@@ -8,13 +8,13 @@ export default jsxRenderer(({ children, title, entryName }) => {
   const pageTitle = title ? `${title} - ${blogName}` : blogName;
   const ogpPath = title ? `/ogps/${entryName}.png` : "/ogp.png";
   const c = useRequestContext();
-  const current = c.req.url;
+  const currentUrl = c.req.url;
   return (
     <html lang="en">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta property="og:url" content={current} />
+        <meta property="og:url" content={currentUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:title" content={pageTitle} />
         <meta

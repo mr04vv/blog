@@ -8,7 +8,7 @@ type MDX = {
   ContentSummary?: () => JSX.Element;
 };
 
-const posts = import.meta.glob<MDX>("../routes/entry/**/*.mdx", {
+const posts = import.meta.glob<MDX>("../articles/**/*.mdx", {
   eager: true,
 });
 

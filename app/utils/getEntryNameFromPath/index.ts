@@ -1,8 +1,8 @@
-// "../../routes/entry/**/*.mdx" から **の部分を取り出す /indexもけす
+// "../../articles/hogehoge/fugafuga/aaa.mdx" から aaaの部分を取り出す
 export const getEntryNameFromPath = (path: string) => {
-  const entryName = path.match(/entry\/(.*?)\/[^\/]*\.mdx$/)?.[1];
-  if (!entryName) {
-    throw new Error(`Failed to get entry name from path: ${path}`);
+  const match = path.match(/([^/]+)\.mdx$/);
+  if (!match) {
+    throw new Error(`Invalid path: ${path}`);
   }
-  return entryName;
+  return match[1];
 };
