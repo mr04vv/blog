@@ -3,7 +3,7 @@ import { jsxRenderer } from "hono/jsx-renderer";
 import { Script } from "honox/server";
 import styles from "../styles/style.css?url";
 
-export default jsxRenderer(({ children, title }) => {
+export default jsxRenderer(({ children, title, entryName }) => {
   return (
     <html lang="en">
       <head>
@@ -12,6 +12,7 @@ export default jsxRenderer(({ children, title }) => {
         <title>{title}</title>
         <link rel="icon" href="/favicon.ico" />
         <Script src="/app/client.ts" async />
+        <meta property="og:image" content={`/ogps/${entryName}.png`} />
         <Style />
         {import.meta.env.PROD ? (
           <link href="/styles/style.css" rel="stylesheet" />
