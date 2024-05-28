@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 .markdown {
-  @apply text-gray-900 break-words box-border tracking-wide antialiased;
+  @apply text-gray-800 break-words box-border tracking-wide ;
 }
 
 .markdown > * + * {
@@ -37,11 +37,11 @@
 }
 
 .markdown h1 {
-  @apply leading-tight text-4xl  mb-4 mt-6 pb-2;
+  @apply leading-tight text-3xl mb-4 mt-6 pb-2 font-semibold;
 }
 
 .markdown h2 {
-  @apply leading-tight text-2xl  mb-4 mt-6 pb-2;
+  @apply leading-tight text-2xl mb-4 mt-6 pb-2 font-semibold;
 }
 
 .markdown h3 {
@@ -113,6 +113,10 @@
 .data-footnote-backref {
   @apply no-underline text-sm;
   font-family: Hiragino Kaku Gothic ProN;
+}
+
+header {
+  font-family: Noto Sans JP;
 }
 
 .sr-only {
