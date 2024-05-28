@@ -1,10 +1,12 @@
 import { Style } from "hono/css";
 import { jsxRenderer, useRequestContext } from "hono/jsx-renderer";
 import { Script } from "honox/server";
+import { blogName } from "../constants";
 import styles from "../styles/style.css?url";
 
 export default jsxRenderer(({ children, title, entryName }) => {
-  const pageTitle = title ? `${title} - もりのぶろぐ` : "もりのぶろぐ";
+  const pageTitle = title ? `${title} - ${blogName}` : blogName;
+  const ogpPath = title ? `/ogps/${entryName}.png` : "/ogp.png";
   const c = useRequestContext();
   const current = c.req.url;
   return (
@@ -19,8 +21,8 @@ export default jsxRenderer(({ children, title, entryName }) => {
           property="og:description"
           content="日常や技術に関して気まぐれに投稿する日記"
         />
-        <meta property="og:site_name" content="もりのぶろぐ" />
-        <meta property="og:image" content={`/ogps/${entryName}.png`} />
+        <meta property="og:site_name" content={blogName} />
+        <meta property="og:image" content={ogpPath} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@mooriii" />
         <meta name="twitter:title" content={pageTitle} />
@@ -28,7 +30,7 @@ export default jsxRenderer(({ children, title, entryName }) => {
           name="twitter:description"
           content="日常や技術に関して気まぐれに投稿する日記"
         />
-        <meta name="twitter:image" content={`/ogps/${entryName}.png`} />
+        <meta name="twitter:image" content={ogpPath} />
         <title>{pageTitle}</title>
         <link rel="icon" href="/favicon.ico" />
         <Script src="/app/client.ts" async />

@@ -4,12 +4,11 @@ import { Parser } from "budoux/dist/parser";
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
 import satori from "satori";
-import image from "../../assets/avatar.png?url";
+import { blogName } from "../../constants";
 import { getPostByEntryName, getPosts } from "../../lib/posts";
 
 const parser = new Parser(jaModel);
 
-console.debug(image);
 export default createRoute(
   ssgParams(() => {
     const posts = getPosts();
@@ -46,7 +45,7 @@ export default createRoute(
           <div tw={"flex w-full pt-12 px-20"}>
             <div
               tw={`flex justify-center text-[${
-                titleLen > 20 ? 4 : 5.2
+                titleLen > 20 ? 3.6 : 4.8
               }rem] flex-wrap`}
             >
               {splitedTitle.map((s) => (
@@ -63,7 +62,7 @@ export default createRoute(
                 tw="rounded-full mr-4 w-18 h-18"
                 src="https://avatars.githubusercontent.com/u/24749358?v=4&s=100"
               />
-              @mooriii
+              {blogName}
             </div>
             <h1
               style={{
@@ -71,7 +70,7 @@ export default createRoute(
                 fontFamily: "Noto Sans JP",
               }}
             >
-              もりのぶろぐ
+              blog.mooriii.com
             </h1>
           </div>
         </div>
@@ -140,13 +139,11 @@ async function loadGoogleFont({
 
   const css = await fetch(`${url}`, {
     headers: {
-      // construct user agent to get TTF font
       "User-Agent":
         "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
     },
   }).then((res) => res.text());
 
-  // Get the font URL from the CSS text
   const fontUrl = css.match(
     /src: url\((.+)\) format\('(opentype|truetype)'\)/,
   )?.[1];
