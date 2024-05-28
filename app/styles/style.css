@@ -115,10 +115,6 @@
   font-family: Hiragino Kaku Gothic ProN;
 }
 
-header {
-  font-family: Noto Sans JP;
-}
-
 .sr-only {
   @apply border-t border-gray-300 my-3;
 }
