@@ -1,0 +1,58 @@
+---
+title: "２つ目の記事を書いてみたけど思ったよりタイトルが長くなってしまいました"
+date: "2024-05-28T15:00:00"
+description: Honoxを触ってみたかったので個人ブログを開設しました。
+---
+
+# ブログのタイトル
+## 最初のブログ
+
+[これはリンクです](https://mooriii.com)
+
+
+markdown 形式で書けるからすごい書きやすいね〜〜〜
+脚注[^1]も簡単に書けるね
+
+[^1]: これは脚注ですhttps://mooriii.com
+
+
+> もっとたくさん文章を書いたときはどうなるんだろう？
+> こんな感じで複数行書くこともあるよね
+> <p class="source">[ここに出典元を記載](https://mooriii.com)</p>
+
+
+
+
+
+**強調も書きやすい**
+_斜体も書きやすい_
+
+~~ああ~~
+
+```html showLineNumbers
+<div>aa</div>
+```
+
+もっとたくさん文章を書いたときはどうなるんだろう？
+こんな感じで複数行書くこともあるよね
+### 見出しも書きやすいね！
+
+## シンタックスハイライトがすごい！
+
+`hoge` がいいね `ありがとう`
+
+```tsx showLineNumbers title="sample.tsx" {5,8-9} /setFloating/#s /refs/#v /adapter/
+import pages from "@hono/vite-cloudflare-pages";
+import adapter from "@hono/vite-dev-server/cloudflare";
+
+function MyComponent() {
+  const { refs, floatingStyles } = useFloating();
+
+  return (
+    <>
+      <div ref={refs.setReference} />
+      <div ref={refs.setFloating} style={floatingStyles} />
+    </>
+  );
+}
+```

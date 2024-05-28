@@ -1,7 +1,10 @@
 import {} from "hono";
+import type { Frontmatter } from "./types/frontmatter";
 
 type Head = {
   title?: string;
+  frontmatter?: Frontmatter;
+  entryName?: string;
 };
 
 declare module "hono" {

@@ -1,5 +1,4 @@
-import pages from "@hono/vite-cloudflare-pages";
-import adapter from "@hono/vite-dev-server/cloudflare";
+import ssg from "@hono/vite-ssg";
 import mdx from "@mdx-js/rollup";
 import honox from "honox/vite";
 import client from "honox/vite/client";
@@ -20,18 +19,17 @@ export default defineConfig(({ mode }) => {
     };
   }
 
-  const rehype = () => remarkRehype({ footnoteBackContent: "↩" });
+  const entry = "./app/server.ts";
+
   return {
     plugins: [
-      honox({
-        devServer: {
-          adapter,
-        },
-      }),
-      pages(),
+      ssg({ entry }),
+      honox({}),
       mdx({
         jsxImportSource: "hono/jsx",
         remarkPlugins: [
+          remarkFrontmatter,
+          remarkMdxFrontmatter,
           [
             remarkRehype,
             {
@@ -41,17 +39,37 @@ export default defineConfig(({ mode }) => {
               footnoteBackLabel: "Back to reference 1",
             },
           ],
-          remarkFrontmatter,
-          remarkMdxFrontmatter,
-          remarkParse,
           remarkGfm,
+          remarkParse,
         ],
         rehypePlugins: [rehypeStringify, [rehypePrettyCode, { theme: theme }]],
       }),
     ],
     build: {
       assetsDir: "static",
+      emptyOutDir: false,
       ssrEmitAssets: true,
+      rollupOptions: {
+        input: ["./app/styles/style.css"],
+        output: {
+          assetFileNames: (assetInfo) => {
+            if (assetInfo.name === "style.css") return "styles/style.css";
+            return assetInfo.name ?? "";
+          },
+        },
+      },
+    },
+
+    ssr: {
+      target: "node",
+      external: [
+        "unified",
+        "@mdx-js/mdx",
+        "satori",
+        "@resvg/resvg-js",
+        "feed",
+        "budoux",
+      ],
     },
   };
 });
