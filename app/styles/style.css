@@ -21,7 +21,7 @@
 }
 
 .markdown strong {
-  @apply font-semibold;
+  @apply bold;
 }
 
 .markdown a {
@@ -117,8 +117,4 @@
 
 .sr-only {
   @apply border-t border-gray-300 my-3;
-}
-
-strong{
-  font-weight:bold;
 }
