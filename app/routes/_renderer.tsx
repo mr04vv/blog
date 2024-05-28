@@ -4,7 +4,7 @@ import { Script } from "honox/server";
 import styles from "../styles/style.css?url";
 
 export default jsxRenderer(({ children, title, entryName }) => {
-  const pageTitle = title ? `${title} - もりのブログ` : "もりのブログ";
+  const pageTitle = title ? `${title} - もりのぶろぐ` : "もりのぶろぐ";
   const c = useRequestContext();
   const current = c.req.url;
   return (
@@ -19,7 +19,7 @@ export default jsxRenderer(({ children, title, entryName }) => {
           property="og:description"
           content="日常や技術に関して気まぐれに投稿する日記"
         />
-        <meta property="og:site_name" content="もりのブログ" />
+        <meta property="og:site_name" content="もりのぶろぐ" />
         <meta property="og:image" content={`/ogps/${entryName}.png`} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@mooriii" />

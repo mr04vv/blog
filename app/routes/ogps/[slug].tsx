@@ -71,7 +71,7 @@ export default createRoute(
                 fontFamily: "Noto Sans JP",
               }}
             >
-              もりのブログ
+              もりのぶろぐ
             </h1>
           </div>
         </div>
