@@ -19,6 +19,7 @@
     "@hono/vite-ssg": "0.1.0",
     "@mdx-js/rollup": "3.0.1",
     "@resvg/resvg-js": "2.6.2",
+    "budoux": "0.6.2",
     "hono": "4.3.11",
     "honox": "0.1.18",
     "rehype-highlight": "7.0.0",
