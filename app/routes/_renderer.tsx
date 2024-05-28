@@ -1,6 +1,7 @@
 import { Style } from "hono/css";
 import { jsxRenderer, useRequestContext } from "hono/jsx-renderer";
 import { Script } from "honox/server";
+import { Header } from "../components";
 import { blogName } from "../constants";
 import styles from "../styles/style.css?url";
 
@@ -41,8 +42,9 @@ export default jsxRenderer(({ children, title, entryName }) => {
           <link href={styles} rel="stylesheet" />
         )}
       </head>
-      <body class={"flex justify-center"}>
-        <main class={"max-w-2xl w-screen px-4"}>{children}</main>
+      <body class={"flex flex-col items-center my-10"}>
+        <Header />
+        <main class={"max-w-2xl w-screen px-4 mt-6"}>{children}</main>
       </body>
     </html>
   );
