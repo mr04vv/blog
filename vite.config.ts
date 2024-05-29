@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => {
       honox({}),
       mdx({
         jsxImportSource: "hono/jsx",
+        providerImportSource: "./app/lib/mdxComponents",
         remarkPlugins: [
           remarkFrontmatter,
           remarkMdxFrontmatter,
@@ -52,21 +53,20 @@ export default defineConfig(({ mode }) => {
         targets: [
           {
             src: [
-              "./app/articles/**/*.png",
-              "./app/articles/**/*.jpg",
-              "./app/articles/**/*.jpeg",
-              "./app/articles/**/*.webp",
+              "./app/assets/**/*.png",
+              "./app/assets/**/*.jpg",
+              "./app/assets/**/*.jpeg",
+              "./app/assets/**/*.webp",
+              "./app/assets/**/*.gif",
             ],
-            dest: "entry",
+            dest: "assets",
             rename: (
               _fileName: string,
               _fileExtension: string,
               fullPath: string,
             ) => {
               const destPath = normalizePath(
-                path
-                  .relative(__dirname, fullPath)
-                  .replace(/^app\/articles\/.*\//, ""),
+                path.relative(__dirname, fullPath).replace(/^app\/.*\//, ""),
               );
               return destPath;
             },
