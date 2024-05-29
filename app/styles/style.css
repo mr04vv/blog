@@ -37,15 +37,15 @@
 }
 
 .markdown h1 {
-  @apply leading-tight text-3xl mb-4 mt-6 pb-2 font-semibold;
+  @apply leading-tight text-3xl mb-4 mt-6 pb-2 font-bold;
 }
 
 .markdown h2 {
-  @apply leading-tight text-2xl mb-4 mt-6 pb-2 font-semibold;
+  @apply leading-tight text-2xl mb-4 mt-6 pb-2 font-bold;
 }
 
 .markdown h3 {
-  @apply leading-snug text-lg mb-4 mt-6;
+  @apply leading-snug text-lg mb-4 mt-6 font-bold;
 }
 
 .markdown h4 {
