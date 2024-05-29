@@ -33,7 +33,7 @@
 }
 
 .markdown p {
-  @apply text-base leading-7;
+  @apply text-base leading-7 my-4;
 }
 
 .markdown h1 {
