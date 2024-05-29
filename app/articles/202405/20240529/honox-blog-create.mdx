@@ -1,0 +1,64 @@
+---
+title: HonoxのSSGで個人ブログを構築しました
+date: 2024-05-29T11:51:03.423Z
+description: アウトプットが疎かになってきてブログを始める機運になったのでHonoxのSSGで個人ブログを構築してみました。HonoxのSSGを使っていてビルド時にOGPも生成するようにしています。
+---
+
+import { Image } from '../../../components';
+
+
+# HonoxのSSGで個人ブログを構築しました
+
+最近自分のアウトプットに課題を感じていて、何かいいものないかな〜って思っていたところに、Honoxという試したい技術が出てきて良い機会だったので勉強がてら個人ブログを作ってみました。
+
+## Honoxがすごい
+
+// 執筆途中
+
+## OGPもSSGのビルド時に生成するようにした
+今回はSSGで事前にHtmlを生成するようにしたのですが、記事のタイトルで変化するOGPもビルド時に生成するようにしました。
+
+// 執筆途中
+
+## MDXがすごい
+
+MDXは簡単に言うと「MarkdownにJSXが書けるもの」なんですが、これが普段JSXを書いてる身からすると超便利です。
+
+[Storybook](https://storybook.js.org/)で見たことはあったものの自分で使う機会がなかったので初めてちゃんと使ってみました。
+
+MDXは独自コンポーネントも使えるので、画像を表示したいときはこんな感じで書けちゃいます。
+```tsx
+<Image src="./latte.jpg" caption="今日のらてさん" alt="今日のらてさん"/>
+```
+
+JSXとかその前にMarkdownでブログ書けるのめっちゃ便利です。
+
+## シンタックスハイライトがすごい
+
+今回は[Rehype Pretty Code](https://rehype-pretty.pages.dev/)を使ってシンタックスハイライトを実現しました。
+
+こんな感じで行数表示とか行ハイライトとかいい感じにやってくれます。
+```tsx showLineNumbers{} title="sample.tsx" {5,8-9} /setFloating/#s /refs/#v /adapter/
+import { useFloating } from "@floating-ui/react";
+ 
+function MyComponent() {
+  const { refs, floatingStyles } = useFloating();
+ 
+  return (
+    <>
+      <div ref={refs.setReference} />
+      <div ref={refs.setFloating} style={floatingStyles} />
+    </>
+  );
+}
+```
+
+
+
+## おわりに
+今回はブログを作るときに感動しまくったことを書きましたが、実際構築時にどん詰まりしたこともたくさんあったので、少しずつ整理して出していきたいと思います。
+
+最後に愛猫のらてさんでお別れ。
+
+
+<Image src="./latte.jpg" caption="今日のらてさん" alt="今日のらてさん"/>
