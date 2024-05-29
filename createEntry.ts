@@ -11,7 +11,7 @@ const result = await prompts([
   {
     type: "text",
     name: "entryPath",
-    message: "記事のパスを入力してください:",
+    message: "記事のuriを入力してください:",
   },
 ]);
 
@@ -56,3 +56,7 @@ await promises.writeFile(
   `./app/articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx`,
   frontMatter,
 );
+
+await $`echo articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx is created.`;
+
+await $`code ./app/articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx`;
