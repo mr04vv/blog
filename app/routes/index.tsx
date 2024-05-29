@@ -6,7 +6,7 @@ export default createRoute((c) => {
   return c.render(
     <div class={"mt-6 flex flex-col gap-12"}>
       {posts.map((post) => (
-        <div key={post.entryName} class={"flex flex-col"}>
+        <div key={post.entryName} class={"flex flex-col gap-1"}>
           <a href={`/entry/${post.entryName}`}>
             <h2
               class={
@@ -17,14 +17,13 @@ export default createRoute((c) => {
             </h2>
           </a>
 
-          <div class={"gap-1 mt-2"}>
+          <div class={"flex flex-col gap-0.5"}>
             <time class={"text-gray-500 text-sm"}>
               {new Date(post.frontmatter.date).toLocaleDateString("ja-JP")}
             </time>
-            {" — "}
-            <span class={"text-gray-500 text-sm"}>
+            <p class={"text-gray-500 text-sm"}>
               {post.frontmatter.description}
-            </span>
+            </p>
           </div>
         </div>
       ))}
