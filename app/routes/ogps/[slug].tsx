@@ -42,10 +42,11 @@ export default createRoute(
             "bg-[#FFFBEC] rounded-3xl border-solid w-full flex flex-col justify-around"
           }
         >
-          <div tw={"flex w-full pt-12 px-20"}>
+          <div tw={"flex w-full pt-12 px-34"}>
             <div
               tw={`flex justify-center text-[${
-                titleLen > 20 ? 3.6 : 4.8
+                // 要調整
+                titleLen > 20 ? 4.4 : 4.8
               }rem] flex-wrap`}
             >
               {splitedTitle.map((s) => (

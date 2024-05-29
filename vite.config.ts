@@ -1,3 +1,4 @@
+import path from "node:path";
 import ssg from "@hono/vite-ssg";
 import mdx from "@mdx-js/rollup";
 import honox from "honox/vite";
@@ -9,7 +10,8 @@ import remarkGfm from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import { defineConfig } from "vite";
+import { defineConfig, normalizePath } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 import theme from "./assets/theme.json";
 
 export default defineConfig(({ mode }) => {
@@ -43,6 +45,34 @@ export default defineConfig(({ mode }) => {
           remarkParse,
         ],
         rehypePlugins: [rehypeStringify, [rehypePrettyCode, { theme: theme }]],
+      }),
+      // 記事内の画像を特定のディレクトリに吐き出すように
+      // 参照：　https://github.com/p1ass/blog/blob/d5af3142bc4338d0a3164a9a1e28ef3812774fa7/vite.config.ts#L56-L80
+      viteStaticCopy({
+        targets: [
+          {
+            src: [
+              "./app/articles/**/*.png",
+              "./app/articles/**/*.jpg",
+              "./app/articles/**/*.jpeg",
+              "./app/articles/**/*.webp",
+            ],
+            dest: "entry",
+            rename: (
+              _fileName: string,
+              _fileExtension: string,
+              fullPath: string,
+            ) => {
+              const destPath = normalizePath(
+                path
+                  .relative(__dirname, fullPath)
+                  .replace(/^app\/articles\/.*\//, ""),
+              );
+              return destPath;
+            },
+            overwrite: false,
+          },
+        ],
       }),
     ],
     build: {
