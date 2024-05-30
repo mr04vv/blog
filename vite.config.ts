@@ -47,6 +47,7 @@ export default defineConfig(({ mode }) => {
         ],
         rehypePlugins: [rehypeStringify, [rehypePrettyCode, { theme: theme }]],
       }),
+
       // 記事内の画像を特定のディレクトリに吐き出すように
       // 参照：　https://github.com/p1ass/blog/blob/d5af3142bc4338d0a3164a9a1e28ef3812774fa7/vite.config.ts#L56-L80
       viteStaticCopy({
@@ -72,6 +73,21 @@ export default defineConfig(({ mode }) => {
             },
             overwrite: false,
           },
+          {
+            src: ["./app/theme.js"],
+            dest: "static",
+            rename: (
+              _fileName: string,
+              _fileExtension: string,
+              fullPath: string,
+            ) => {
+              const destPath = normalizePath(
+                path.relative(__dirname, fullPath).replace(/^app\//, ""),
+              );
+              return destPath;
+            },
+            overwrite: false,
+          },
         ],
       }),
     ],
@@ -80,10 +96,12 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: false,
       ssrEmitAssets: true,
       rollupOptions: {
-        input: ["./app/styles/style.css"],
+        input: ["./app/styles/style.css", "./app/theme.ts"],
         output: {
+          entryFileNames: "static/[name].js",
           assetFileNames: (assetInfo) => {
             if (assetInfo.name === "style.css") return "styles/style.css";
+            if (assetInfo.name === "theme.ts") return "static/theme.js";
             return assetInfo.name ?? "";
           },
         },
