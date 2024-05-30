@@ -10,7 +10,7 @@ export const Profile = () => {
       }
     >
       {import.meta.env.PROD ? (
-        <Avatar src="/assets/avatar.png" />
+        <Avatar src="/assets/avatar.gif" />
       ) : (
         <Avatar src={image} />
       )}
