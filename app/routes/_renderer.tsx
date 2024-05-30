@@ -25,7 +25,10 @@ export default jsxRenderer(({ children, title, entryName }) => {
           content="日常や技術に関して気まぐれに投稿する日記"
         />
         <meta property="og:site_name" content={blogName} />
-        <meta property="og:image" content={ogpPath} />
+        <meta
+          property="og:image"
+          content={`https://blog.mooriii.com${ogpPath}`}
+        />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@mooriii" />
         <meta name="twitter:title" content={pageTitle} />
@@ -33,7 +36,10 @@ export default jsxRenderer(({ children, title, entryName }) => {
           name="twitter:description"
           content="日常や技術に関して気まぐれに投稿する日記"
         />
-        <meta name="twitter:image" content={ogpPath} />
+        <meta
+          name="twitter:image"
+          content={`https://blog.mooriii.com${ogpPath}`}
+        />
         <title>{pageTitle}</title>
         <link rel="icon" href="/favicon.ico" />
         {import.meta.env.PROD ? (
