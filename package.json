@@ -33,7 +33,7 @@
     "satori": "0.10.13"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20240524.0",
+    "@cloudflare/workers-types": "4.20240529.0",
     "@hono/vite-cloudflare-pages": "0.4.0",
     "@hono/vite-dev-server": "0.12.1",
     "@types/bun": "1.1.3",
