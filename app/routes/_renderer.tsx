@@ -3,6 +3,7 @@ import { jsxRenderer, useRequestContext } from "hono/jsx-renderer";
 import { Script } from "honox/server";
 import { Header } from "../components";
 import { blogName } from "../constants";
+import ThemeButton from "../islands/button";
 import styles from "../styles/style.css?url";
 
 export default jsxRenderer(({ children, title, entryName }) => {
@@ -40,7 +41,7 @@ export default jsxRenderer(({ children, title, entryName }) => {
         ) : (
           <script src="/app/theme.ts" />
         )}
-        <Script src="/app/client.ts" />
+        <Script src="/app/client.ts" async />
         <Style />
         {import.meta.env.PROD ? (
           <link href="/styles/style.css" rel="stylesheet" />
@@ -49,7 +50,9 @@ export default jsxRenderer(({ children, title, entryName }) => {
         )}
       </head>
       <body class={"flex flex-col items-center mb-2 dark:bg-zinc-800 mx-10"}>
-        <Header />
+        <Header>
+          <ThemeButton />
+        </Header>
         <main class={"max-w-2xl w-screen px-4 mt-6"}>{children}</main>
       </body>
     </html>

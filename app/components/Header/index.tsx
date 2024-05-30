@@ -1,7 +1,10 @@
+import type { JSX } from "hono/jsx/jsx-runtime";
 import { blogName } from "../../constants";
-import ThemeButton from "../../islands/button";
 
-export const Header = () => {
+type Props = {
+  children: JSX.Element;
+};
+export const Header = (props: Props) => {
   return (
     <header
       class={
@@ -15,9 +18,7 @@ export const Header = () => {
         </h2>
       </a>
       <div class={"flex flex-1 justify-center"}>
-        <div class="mr-2">
-          <ThemeButton />
-        </div>
+        <div class="mr-2">{props.children}</div>
         <a
           href="https://x.com/_mooriii"
           target="_blank"
