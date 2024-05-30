@@ -1,7 +1,7 @@
 import { Style } from "hono/css";
 import { jsxRenderer, useRequestContext } from "hono/jsx-renderer";
 import { Script } from "honox/server";
-import { Header } from "../components";
+import { Header } from "../components/header";
 import { blogName } from "../constants";
 import ThemeButton from "../islands/button";
 import styles from "../styles/style.css?url";
@@ -49,7 +49,7 @@ export default jsxRenderer(({ children, title, entryName }) => {
           <link href={styles} rel="stylesheet" />
         )}
       </head>
-      <body class={"flex flex-col items-center mb-2 dark:bg-zinc-800 mx-10"}>
+      <body class={"flex flex-col items-center mb-2 dark:bg-zinc-800 mx-2"}>
         <Header>
           <ThemeButton />
         </Header>

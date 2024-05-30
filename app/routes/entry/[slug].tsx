@@ -1,5 +1,6 @@
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
+import { Profile } from "../../components/profile";
 import { getPostByEntryName, getPosts } from "../../lib/posts";
 
 export default createRoute(
@@ -19,7 +20,10 @@ export default createRoute(
     const post = getPostByEntryName(slug);
     const pageTitle = post?.frontmatter.title ?? "";
     return c.render(
-      <article class={"markdown"}>{post?.Component({})}</article>,
+      <div class="mb-10">
+        <article class={"markdown"}>{post?.Component({})}</article>
+        <Profile />
+      </div>,
       {
         title: pageTitle,
         entryName: slug,
