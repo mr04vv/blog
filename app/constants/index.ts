@@ -1,1 +1,1 @@
-export const blogName = "moriiiのぶろぐ";
+export const blogName = "moriii's blog";
