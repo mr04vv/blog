@@ -1,5 +1,5 @@
 import type { JSX } from "hono/jsx/jsx-runtime";
-import { blogName } from "../../constants";
+import { blogName } from "../constants";
 
 type Props = {
   children: JSX.Element;
@@ -8,16 +8,15 @@ export const Header = (props: Props) => {
   return (
     <header
       class={
-        "text-center border-b dark:border-gray-500 w-full h-14 tracking-widest dark:text-gray-100 flex justify-center items-center"
+        "text-center border-b px-4 mx-2 max-md:px-2 dark:border-gray-500 w-full h-14 tracking-widest dark:text-gray-100 flex justify-between items-center"
       }
     >
-      <div class="flex-1" />
       <a href="/" class={"flex items-center"}>
-        <h2 class={"font-semibold text-2xl text-center flex-1"}>
-          {blogName}📝
+        <h2 class={"font-semibold text-center text-xl max-md:text-lg"}>
+          {blogName}
         </h2>
       </a>
-      <div class={"flex flex-1 justify-center"}>
+      <div class={"flex justify-center"}>
         <div class="mr-2">{props.children}</div>
         <a
           href="https://x.com/_mooriii"
