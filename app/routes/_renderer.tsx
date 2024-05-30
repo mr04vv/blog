@@ -10,6 +10,7 @@ export default jsxRenderer(({ children, title, entryName }) => {
   const ogpPath = title ? `/ogps/${entryName}.png` : "/ogp.png";
   const c = useRequestContext();
   const currentUrl = c.req.url;
+
   return (
     <html lang="en">
       <head>
@@ -34,7 +35,12 @@ export default jsxRenderer(({ children, title, entryName }) => {
         <meta name="twitter:image" content={ogpPath} />
         <title>{pageTitle}</title>
         <link rel="icon" href="/favicon.ico" />
-        <Script src="/app/client.ts" async />
+        {import.meta.env.PROD ? (
+          <script src="/static/theme.js" />
+        ) : (
+          <script src="/app/theme.ts" />
+        )}
+        <Script src="/app/client.ts" />
         <Style />
         {import.meta.env.PROD ? (
           <link href="/styles/style.css" rel="stylesheet" />
@@ -42,7 +48,7 @@ export default jsxRenderer(({ children, title, entryName }) => {
           <link href={styles} rel="stylesheet" />
         )}
       </head>
-      <body class={"flex flex-col items-center my-10"}>
+      <body class={"flex flex-col items-center mb-2 dark:bg-zinc-800 mx-10"}>
         <Header />
         <main class={"max-w-2xl w-screen px-4 mt-6"}>{children}</main>
       </body>
