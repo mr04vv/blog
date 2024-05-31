@@ -1,5 +1,5 @@
 import { useEffect, useState } from "hono/jsx";
-import HeaderButton from "./headerbutton";
+import HeaderButton from "./headerButton";
 
 export default function ThemeButton() {
   const [currentTheme, setCurrentTheme] = useState<string | null>(null);
