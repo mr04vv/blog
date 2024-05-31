@@ -32,6 +32,10 @@ html {
   @apply  underline decoration-dotted decoration-gray-400;
 }
 
+.ogp-link {
+  @apply !no-underline
+}
+
 .markdown strong a {
   @apply font-bold;
 }
@@ -122,3 +126,4 @@ html {
 .sr-only {
   @apply border-t border-gray-300 my-3;
 }
+
