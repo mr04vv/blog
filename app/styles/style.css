@@ -5,7 +5,11 @@
 @tailwind utilities;
 
 html {
-  @apply text-slate-800
+  @apply text-slate-800 
+}
+
+body {
+  @apply dark:text-gray-100
 }
 
 .markdown {
@@ -14,6 +18,10 @@ html {
 
 .markdown > * + * {
   @apply mt-2 mb-2;
+}
+
+.markdown time {
+  @apply mt-0 mb-2;
 }
 
 .markdown li + li {
@@ -45,7 +53,7 @@ html {
 }
 
 .markdown h1 {
-  @apply leading-tight text-3xl mb-4 mt-6 pb-2 font-bold;
+  @apply leading-tight text-3xl mb-0 mt-6 pb-2 font-bold;
 }
 
 .markdown h2 {
