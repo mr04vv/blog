@@ -117,6 +117,7 @@ export default defineConfig(({ mode }) => {
         "@resvg/resvg-js",
         "feed",
         "budoux",
+        "jsdom",
       ],
     },
   };
