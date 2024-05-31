@@ -55,11 +55,15 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
           <link href={styles} rel="stylesheet" />
         )}
       </head>
-      <body class={"flex flex-col items-center mb-2 dark:bg-zinc-800 mx-2"}>
+      <body
+        class={
+          "flex flex-col items-center mb-2 bg-[#fbf9f2] dark:bg-zinc-800 mx-2"
+        }
+      >
         <Header>
           <ThemeButton />
         </Header>
-        <main class={"max-w-[700px] w-screen px-4 mt-6"}>{children}</main>
+        <main class={"max-w-[700px] w-screen px-6 mt-6"}>{children}</main>
       </body>
     </html>
   );
