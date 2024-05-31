@@ -3,4 +3,5 @@ export type Frontmatter = {
   date: string;
   description: string;
   categories: string[];
+  iconUrl: string;
 };
