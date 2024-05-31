@@ -10,10 +10,13 @@ export const GithubIcon = () => (
   </svg>
 );
 
-export const XIcon = () => (
+type XIconProps = {
+  size?: number;
+};
+export const XIcon = (props: XIconProps) => (
   <svg
-    class="dark:stroke-white dark:fill-white stroke-black fill-black"
-    height={16}
+    class={"dark:stroke-white dark:fill-white stroke-black fill-black"}
+    height={props.size ?? 16}
     viewBox="0 0 31 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
