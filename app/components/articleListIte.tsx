@@ -17,7 +17,7 @@ export const ArticleListItem = (props: Props) => {
           <img src={props.iconUrl} alt="article icon" class={"w-12 h-12"} />
         </div>
         <div class={"flex flex-col gap-2 dark:text-gray-100"}>
-          <h2 class={"text-xl font-semibold hover:underline max-md:text-base"}>
+          <h2 class={"text-xl font-semibold hover:underline max-md:text-lg"}>
             {props.title}
           </h2>
           <div>

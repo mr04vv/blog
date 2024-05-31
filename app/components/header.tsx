@@ -8,11 +8,11 @@ export const Header = (props: Props) => {
   return (
     <header
       class={
-        "text-center border-b px-4 mx-2 max-md:px-2 dark:border-gray-500 w-full h-14 tracking-widest dark:text-gray-100 flex justify-between items-center"
+        "text-center border-b px-4 mx-2 max-md:px-2 dark:border-gray-500 w-full h-16 tracking-widest dark:text-gray-100 flex justify-between items-center"
       }
     >
       <a href="/" class={"flex items-center"}>
-        <h2 class={"font-semibold text-center text-xl max-md:text-lg"}>
+        <h2 class={"font-semibold text-center text-2xl max-md:text-xl"}>
           {blogName}
         </h2>
       </a>
