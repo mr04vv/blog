@@ -6,11 +6,13 @@ import { blogName } from "../constants";
 import ThemeButton from "../islands/button";
 import styles from "../styles/style.css?url";
 
-export default jsxRenderer(({ children, title, entryName }) => {
+export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
   const pageTitle = title ? `${title} - ${blogName}` : blogName;
   const ogpPath = title ? `/ogps/${entryName}.png` : "/ogp.png";
   const c = useRequestContext();
   const currentUrl = c.req.url;
+  const description =
+    frontmatter?.description ?? "日常や技術に関して気まぐれに投稿する日記";
 
   return (
     <html lang="en">
@@ -20,10 +22,7 @@ export default jsxRenderer(({ children, title, entryName }) => {
         <meta property="og:url" content={currentUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:title" content={pageTitle} />
-        <meta
-          property="og:description"
-          content="日常や技術に関して気まぐれに投稿する日記"
-        />
+        <meta property="og:description" content={description} />
         <meta property="og:site_name" content={blogName} />
         <meta
           property="og:image"
@@ -32,16 +31,17 @@ export default jsxRenderer(({ children, title, entryName }) => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@mooriii" />
         <meta name="twitter:title" content={pageTitle} />
-        <meta
-          name="twitter:description"
-          content="日常や技術に関して気まぐれに投稿する日記"
-        />
+        <meta name="twitter:description" content={description} />
         <meta
           name="twitter:image"
           content={`https://blog.mooriii.com${ogpPath}`}
         />
         <title>{pageTitle}</title>
-        <link rel="icon" href="/favicon.ico" />
+        {import.meta.env.PROD ? (
+          <link rel="icon" href="https://blog.mooriii.com/favicon.ico" />
+        ) : (
+          <link rel="icon" href="/favicon.ico" />
+        )}
         {import.meta.env.PROD ? (
           <script src="/static/theme.js" />
         ) : (
@@ -59,7 +59,7 @@ export default jsxRenderer(({ children, title, entryName }) => {
         <Header>
           <ThemeButton />
         </Header>
-        <main class={"max-w-2xl w-screen px-4 mt-6"}>{children}</main>
+        <main class={"max-w-[700px] w-screen px-4 mt-6"}>{children}</main>
       </body>
     </html>
   );
