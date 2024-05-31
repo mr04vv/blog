@@ -49,8 +49,7 @@ title: ${entryTitle}
 date: ${today.toISOString()}
 description: 
 ---
-
-# ${entryTitle}`;
+`;
 
 await promises.writeFile(
   `./app/articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx`,
