@@ -15,7 +15,6 @@ export const ArticleImage = async (props: Props) => {
       <a href={imageUrl}>
         <img src={imageUrl} alt={props.alt} />
       </a>
-      <figcaption class="text-center mt-2">{props.alt}</figcaption>
     </figure>
   );
 };
