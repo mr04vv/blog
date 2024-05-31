@@ -17,7 +17,7 @@ export const ExternalOgp = async (props: Props) => {
     >
       <div
         class={
-          "flex border dark:border-gray-600 rounded-lg  no-underline h-[136px] max-md:h-28"
+          "flex border dark:border-gray-600 rounded-lg  no-underline h-[136px] max-md:h-28 my-4"
         }
       >
         <div class="flex flex-col justify-between px-6 py-4 h-full w-full max-md:px-4">
