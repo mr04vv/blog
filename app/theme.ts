@@ -1,3 +1,4 @@
+// レンダリングされる前に実行しないとチラつきが発生する
 const theme = () => {
   const currentTheme = localStorage.getItem("theme");
   const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -17,3 +18,5 @@ const theme = () => {
 };
 
 theme();
+// androidのブラウザバックのback forward cache対策
+window.addEventListener("pageshow", theme);

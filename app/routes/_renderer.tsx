@@ -3,7 +3,7 @@ import { jsxRenderer, useRequestContext } from "hono/jsx-renderer";
 import { Script } from "honox/server";
 import { Header } from "../components/header";
 import { blogName } from "../constants";
-import ThemeButton from "../islands/button";
+import ThemeButton from "../islands/themeButton";
 import styles from "../styles/style.css?url";
 
 export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
@@ -17,6 +17,7 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
   return (
     <html lang="ja">
       <head>
+        <meta http-equiv="content-language" content="ja" />
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="og:url" content={currentUrl} />

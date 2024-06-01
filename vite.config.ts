@@ -120,5 +120,8 @@ export default defineConfig(({ mode }) => {
         "jsdom",
       ],
     },
+    server: {
+      host: "0.0.0.0",
+    },
   };
 });
