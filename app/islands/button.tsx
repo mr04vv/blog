@@ -39,48 +39,37 @@ export default function ThemeButton() {
   };
   return (
     <HeaderButton onClick={toggleTheme}>
-      <>
-        {currentTheme === "dark" && <DarkIcon />}
-        {currentTheme === "light" && <LightIcon />}
-      </>
+      <LightIcon />
+      <DarkIcon />
     </HeaderButton>
   );
 }
 
 const DarkIcon = () => (
   <svg
+    class="h-6 w-6 hidden dark:block"
+    fill="currentColor"
+    viewBox="0 0 20 20"
     xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    width="20"
-    height="100%"
   >
-    <title>dark</title>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-    />
+    <title>dark theme icon</title>
+    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
   </svg>
 );
 
 const LightIcon = () => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6 block dark:hidden stroke-gray-500"
     fill="none"
     viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    width="20"
-    height="100%"
+    xmlns="http://www.w3.org/2000/svg"
+    stroke-width="2"
   >
-    <title>light</title>
+    <title>light theme icon</title>
     <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </svg>
 );
