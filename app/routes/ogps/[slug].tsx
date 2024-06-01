@@ -39,12 +39,12 @@ export default createRoute(
       <div tw={"bg-[#FFCB67] w-full h-full flex p-9"}>
         <div
           tw={
-            "bg-[#FFFBEC] rounded-3xl border-solid w-full flex flex-col justify-around"
+            "bg-[#FFFBEC] rounded-3xl border-solid w-full flex flex-col justify-end"
           }
         >
-          <div tw={"flex w-full pt-12 px-34"}>
+          <div tw={"flex w-full flex-1 items-center mt-10 px-34"}>
             <div
-              tw={`flex justify-center text-[${
+              tw={`flex justify-center  text-[${
                 // 要調整
                 titleLen > 20 ? 4.4 : 4.8
               }rem] flex-wrap`}
@@ -55,7 +55,9 @@ export default createRoute(
             </div>
           </div>
           <div
-            tw={"flex px-18 items-center justify-between w-full text-[#444444]"}
+            tw={
+              "flex px-18 mb-10 items-center justify-between w-full text-[#444444]"
+            }
           >
             <div tw="text-4xl flex items-center">
               <img
