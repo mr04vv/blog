@@ -5,7 +5,7 @@ type Props = {
 export const TitleIcon = (props: Props) => {
   return (
     <div class={"flex justify-center"}>
-      <img src={props.iconUrl} alt="article icon" width={80} />
+      <img src={props.iconUrl} alt="article icon" width={80} height={80} />
     </div>
   );
 };

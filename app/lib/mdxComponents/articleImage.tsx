@@ -13,7 +13,7 @@ export const ArticleImage = async (props: Props) => {
   return (
     <figure class="full-width justify-center flex">
       <a href={imageUrl}>
-        <img src={imageUrl} alt={props.alt} />
+        <img src={imageUrl} alt={props.alt} width={"100%"} height={"100%"} />
       </a>
     </figure>
   );
