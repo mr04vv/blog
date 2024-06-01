@@ -2,7 +2,7 @@ import type { JSX } from "hono/jsx/jsx-runtime";
 
 type Props = {
   onClick?: () => void;
-  children: JSX.Element;
+  children: JSX.Element[] | JSX.Element;
 };
 export default function HeaderButton(props: Props) {
   return (
