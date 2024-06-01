@@ -33,7 +33,12 @@ export const ExternalOgp = async (props: Props) => {
           </span>
           <div class="flex gap-2 items-center">
             {ogp.favicon && (
-              <img src={ogp.favicon} width={16} alt={`favicon of ${ogp.url}`} />
+              <img
+                src={ogp.favicon}
+                width={16}
+                height={16}
+                alt={`favicon of ${ogp.url}`}
+              />
             )}
 
             <span class="text-xs">{host}</span>
