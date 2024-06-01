@@ -1,11 +1,12 @@
-import { useEffect, useState } from "hono/jsx";
+import { useLayoutEffect, useState } from "hono/jsx";
 import HeaderButton from "./headerButton";
 
 export default function ThemeButton() {
   const [currentTheme, setCurrentTheme] = useState<string | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     initTheme();
+    // androidのブラウザバックのback forward cache対策
     window.addEventListener("pagehide", initTheme);
     window.addEventListener("pageshow", initTheme);
     return () => {
