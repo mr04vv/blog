@@ -1,5 +1,3 @@
-import {} from "hono/jsx";
-
 export default function ThemeButton() {
   const toggleTheme = () => {
     const isDark = document.documentElement.classList.contains("dark");

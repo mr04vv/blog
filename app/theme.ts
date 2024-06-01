@@ -5,13 +5,18 @@ const theme = () => {
   if (currentTheme === null) {
     if (isDark) {
       document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
   } else {
-    if (currentTheme === "dark") document.documentElement.classList.add("dark");
+    if (currentTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }
 };
 
 theme();
 // androidのブラウザバックのback forward cache対策
-window.addEventListener("pagehide", () => theme());
-window.addEventListener("pageshow", () => theme());
+window.addEventListener("pageshow", theme);
