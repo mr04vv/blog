@@ -15,5 +15,6 @@ const theme = () => {
     }
   }
 };
-
 theme();
+window.addEventListener("pagehide", () => theme());
+window.addEventListener("pageshow", () => theme());

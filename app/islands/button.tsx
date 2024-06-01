@@ -5,6 +5,16 @@ export default function ThemeButton() {
   const [currentTheme, setCurrentTheme] = useState<string | null>(null);
 
   useEffect(() => {
+    initTheme();
+    window.addEventListener("pagehide", initTheme);
+    window.addEventListener("pageshow", initTheme);
+    return () => {
+      window.removeEventListener("pagehide", initTheme);
+      window.removeEventListener("pageshow", initTheme);
+    };
+  }, []);
+
+  const initTheme = () => {
     const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const currentTheme = localStorage.getItem("theme");
     const theme = () => {
@@ -13,7 +23,8 @@ export default function ThemeButton() {
       return "light";
     };
     setCurrentTheme(theme());
-  }, []);
+  };
+
   const toggleTheme = () => {
     if (currentTheme === "light") {
       setCurrentTheme("dark");
