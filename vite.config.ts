@@ -59,6 +59,7 @@ export default defineConfig(({ mode }) => {
               "./app/assets/**/*.jpeg",
               "./app/assets/**/*.webp",
               "./app/assets/**/*.gif",
+              "./app/assets/**/*.ttf",
             ],
             dest: "assets",
             rename: (
