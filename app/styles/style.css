@@ -36,14 +36,6 @@ body {
   @apply font-bold;
 }
 
-.markdown a {
-  @apply  underline decoration-dotted decoration-gray-400;
-}
-
-.ogp-link {
-  @apply !no-underline
-}
-
 .markdown strong a {
   @apply font-bold;
 }
