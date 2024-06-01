@@ -26,10 +26,13 @@ export const XIcon = (props: XIconProps) => (
   </svg>
 );
 
-export const HomeIcon = () => (
+type HomeIconProps = {
+  size?: number;
+};
+export const HomeIcon = (props: HomeIconProps) => (
   <svg
     class="dark:stroke-white stroke-black"
-    height={20}
+    height={props.size ?? 20}
     viewBox="0 0 40 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

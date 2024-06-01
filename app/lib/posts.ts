@@ -42,3 +42,9 @@ export const getPostByEntryName = (entryName: string) => {
   const post = posts.find((post) => post.entryName === entryName);
   return post;
 };
+
+export const getLatestPostsWithoutTargetPost = (postEntryName: string) => {
+  const posts = getPosts();
+  const latestPosts = posts.filter((post) => post.entryName !== postEntryName);
+  return latestPosts.slice(0, 3);
+};
