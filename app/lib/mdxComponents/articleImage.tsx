@@ -11,7 +11,7 @@ export const ArticleImage = async (props: Props) => {
     ? `/assets/${props.src}`
     : `${devImagePath}/assets/${props.src}`;
   return (
-    <figure class="full-width">
+    <figure class="full-width justify-center flex">
       <a href={imageUrl}>
         <img src={imageUrl} alt={props.alt} />
       </a>

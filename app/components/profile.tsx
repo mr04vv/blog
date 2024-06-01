@@ -1,4 +1,4 @@
-import image from "../assets/avatar.gif?url";
+import image from "../assets/avatar.webp?url";
 import { Avatar } from "./avatar";
 import { GithubIcon, HomeIcon, NoteIcon, SizuMeIcon, XIcon } from "./icons";
 const ICON_SIZE = 24;
@@ -10,7 +10,7 @@ export const Profile = () => {
       }
     >
       {import.meta.env.PROD ? (
-        <Avatar src="/assets/avatar.gif" />
+        <Avatar src="/assets/avatar.webp" />
       ) : (
         <Avatar src={image} />
       )}
