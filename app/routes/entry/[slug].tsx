@@ -54,17 +54,18 @@ export default createRoute(
           </time>
         </div>
         <article class={"markdown"}>{post?.Component({})}</article>
-        <a
-          href={`https://twitter.com/share?url=https://blog.mooriii.com/${
-            post?.entryName
-          }&text=${post?.frontmatter.title}${" - "}mooriii's blog`}
-          class={"flex justify-center hover:opacity-70 transition-opacity"}
-        >
-          <div class={"mt-10 flex items-center justify-center gap-4"}>
-            <span>この記事をシェアする</span>
+
+        <div class={"mt-10 flex items-center justify-center gap-2"}>
+          <span>この記事をシェアする</span>
+          <a
+            href={`https://twitter.com/share?url=https://blog.mooriii.com/${
+              post?.entryName
+            }&text=${post?.frontmatter.title}${" - "}mooriii's blog`}
+            class={"flex hover:opacity-70 transition-opacity"}
+          >
             <XIcon size={26} />
-          </div>
-        </a>
+          </a>
+        </div>
 
         <Profile />
         {hasLatestPosts && (
