@@ -4,6 +4,7 @@ type Props = {
 };
 
 export const ArticleImage = async (props: Props) => {
+  const isFullUrl = props.src.startsWith("http");
   // ここもっといい感じにしたい
   const devImagePath =
     "http://localhost:5173/@fs/Users/takutomori/Works/develop/workspace/projects/blog/app";
@@ -12,8 +13,13 @@ export const ArticleImage = async (props: Props) => {
     : `${devImagePath}/assets/${props.src}`;
   return (
     <figure class="full-width justify-center flex">
-      <a href={imageUrl}>
-        <img src={imageUrl} alt={props.alt} width={"100%"} height={"100%"} />
+      <a href={isFullUrl ? props.src : imageUrl}>
+        <img
+          src={isFullUrl ? props.src : imageUrl}
+          alt={props.alt}
+          width={"100%"}
+          height={"100%"}
+        />
       </a>
     </figure>
   );
