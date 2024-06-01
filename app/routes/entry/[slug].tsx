@@ -1,9 +1,16 @@
+import { Fragment } from "hono/jsx/jsx-runtime";
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
+import { ArticleListItem } from "../../components/articleListIte";
+import { Footer } from "../../components/footer";
 import { XIcon } from "../../components/icons";
 import { Profile } from "../../components/profile";
 import { TitleIcon } from "../../components/titleIcon";
-import { getPostByEntryName, getPosts } from "../../lib/posts";
+import {
+  getLatestPostsWithoutTargetPost,
+  getPostByEntryName,
+  getPosts,
+} from "../../lib/posts";
 
 export default createRoute(
   ssgParams(() => {
@@ -24,8 +31,11 @@ export default createRoute(
     const date = new Date(post?.frontmatter.date ?? "").toLocaleDateString(
       "ja-JP",
     );
+
+    const latestPosts = getLatestPostsWithoutTargetPost(post?.entryName ?? "");
+    const hasLatestPosts = latestPosts.length > 0;
     return c.render(
-      <div class="mb-10">
+      <div>
         <div class={"flex flex-col mb-10"}>
           <TitleIcon iconUrl={post?.frontmatter.iconUrl ?? ""} />
           <h1
@@ -44,18 +54,38 @@ export default createRoute(
           </time>
         </div>
         <article class={"markdown"}>{post?.Component({})}</article>
-        <div class={"mt-10 flex items-center justify-center gap-4"}>
-          <span>この記事をシェアする</span>
-          <a
-            href={`https://twitter.com/share?url=https://blog.mooriii.com/${
-              post?.entryName
-            }&text=${post?.frontmatter.title}${" - "}mooriii's blog`}
-            class={"flex justify-center"}
-          >
+        <a
+          href={`https://twitter.com/share?url=https://blog.mooriii.com/${
+            post?.entryName
+          }&text=${post?.frontmatter.title}${" - "}mooriii's blog`}
+          class={"flex justify-center hover:opacity-70 transition-opacity"}
+        >
+          <div class={"mt-10 flex items-center justify-center gap-4"}>
+            <span>この記事をシェアする</span>
             <XIcon size={26} />
-          </a>
-        </div>
+          </div>
+        </a>
+
         <Profile />
+        {hasLatestPosts && (
+          <div class={"flex flex-col gap-3"}>
+            <p class={"font-bold"}>新着記事</p>
+            <div class={"flex flex-col gap-4"}>
+              {latestPosts.map((post) => (
+                <Fragment key={post.entryName}>
+                  <ArticleListItem
+                    entryName={post.entryName}
+                    date={post.frontmatter.date}
+                    title={post.frontmatter.title}
+                    description={post.frontmatter.description}
+                    iconUrl={post.frontmatter.iconUrl}
+                  />
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        )}
+        <Footer />
       </div>,
       {
         title: pageTitle,
