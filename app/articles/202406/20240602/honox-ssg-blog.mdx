@@ -1,6 +1,6 @@
 ---
 title: HonoXのSSGで個人ブログを構築しました
-date: 2024-05-29T11:51:03.423Z
+date: 2024-06-02T11:51:03.423Z
 description: 個人ブログを開設する機運が高まっていたのでHonoXのSSGで個人ブログを構築しました。
 iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Fire/Flat/fire_flat.svg 
 ---
@@ -50,14 +50,15 @@ SSGはそのままではクライアントjsを動かせないので、 `islands
   }
 ```
 
-> You can bring your own renderer using a UI library like React, Preact, Solid, or others.
 
-rendererはデフォルトでは `hono/jsx`のものが使われますが、[README](https://github.com/honojs/honox/tree/main?tab=readme-ov-file#byor---bring-your-own-renderer)に書かれているように、Reactのrendereを使うこともできるみたいです。が、今回は試してません。
+rendererはデフォルトでは `hono/jsx`のものが使われますが、[README](https://github.com/honojs/honox/tree/main?tab=readme-ov-file#byor---bring-your-own-renderer)に書かれているように、React等のrendereを使うこともできるみたいです。が、今回は試してません。
+
+> You can bring your own renderer using a UI library like React, Preact, Solid, or others.
 
 
 ## MDXを使えるようにする
 
-今回初めてMDXに触れたんですが、こいつの破壊力が抜群すぎて感動しました。
+今回初めてちゃんとMDXに触れたんですが、こいつの破壊力が抜群すぎて感動しました。Storybookとかで少しだけ触ったことあったんですが想像以上でした。
 
 ### MDXとは
 [MDX](https://mdxjs.com/)とは、簡単に言うとMarkdownの中でJSXが書けちゃうもので、独自のコンポーネントを使った拡張も出来てかなり執筆体験が良いです。
@@ -104,28 +105,38 @@ export default jsxRenderer(({ children, frontmatter }) => {
 例えばこんな感じで画像を参照させても、内部的に独自の画像用コンポーネントを使うことも可能です。
 
 
-```tsx
-const AnchorLink = ({href, children}) => {
-  return <a href={href} target="_blank">{children}</a>
-}
+```tsx showLineNumbers
+type Props = {
+  src: string;
+  alt: string;
+};
+const ArticleImage = (props: Props) => {
+  return (
+    <figure class="full-width justify-center flex">
+      <a href={props.src}>
+        <img src={props.src} alt={props.alt} />
+      </a>
+    </figure>
+  );
+};
 
 export function useMDXComponents(): MDXComponents {
   const components = {
-    ExternalOgp: ExternalOgp, // 独自コンポーネント
-    a: AnchorLink,
+    ExternalOgp: ExternalOgp, // 独自コンポーネントの追加
+    img: ArticleImage, // 既存コンポーネントの上書き
   };
   return components;
 }
 ```
 
-定義されていない独自のコンポーネントも追加できるので、mdxファイル内でJSXを書いてあげるといい感じにしてくれます。
+HTMLタグに無い独自のコンポーネントも追加できるので、mdxファイル内でJSXを書いてあげるといい感じにしてくれます。
 
 ```mdx
 ## カスタムのコンポーネント
 <ExternalOgp url="https://mooriii.com"/>
 ```
 
-`ExternalOgp`は実際にはこんな感じで表示されます↓↓
+実際の表示↓↓↓
 
 <ExternalOgp url="https://mooriii.com"/>
 
@@ -153,18 +164,44 @@ function MyComponent() {
 ```
 設定方法等はまた次の機会に。
 
-## ルーティングの設定
-
-// slugを使って動的ルーティングにした
 
 ## OGPもSSGのビルド時に生成するようにした
 今回はSSGで事前にHtmlを生成するようにしたのですが、記事のタイトルで変化するOGPもビルド時に生成するようにしました。
 
-// slugで動的ルーティングに合わせたOGPを取れるように
-// budouxでめちゃくちゃ詰まった
-// externalの設定とかいっぱいあった
-// satori使った
+[@berlysia](https://x.com/berlysia)さんの[記事](https://blog.berlysia.net/entry/2024-02-29-honox-og-image)と[リポジトリ](https://github.com/berlysia/blog.berlysia.net)を参考にさせてもらいながら進めました。
 
+<ExternalOgp url="https://blog.berlysia.net/entry/2024-02-29-honox-og-image"/>
+
+動的ルーティングでいい感じにしたことと、ビルドの設定や[budoux](https://github.com/google/budoux)の導入に躓いた事は次回以降の記事で書いていきます。
+
+結果的にmdxから記事のタイトルを抽出したOGPを生成してくれるようになりました。
+
+![ogp](honox-ssg-blog.webp)
+
+## ダークモード対応
+
+[Tailwind](https://tailwindcss.com/)を使ってスタイルを当てているので、ダークモードも比較的簡単に実現できました。
+<ExternalOgp url="https://tailwindcss.com/docs/dark-mode"/>
+
+ただし、cssが読み込まれる前にテーマの設定をしてあげないと、ページ遷移時やリロード時にチラつきが発生してしまいます。
+
+`<style>`タグの前にテーマ設定のスクリプトを仕込んであげればチラつきは解消できます。
+
+
+
+### AndroidのBFCacheに対応する
+上記でチラつきは解消したのですが、Android端末でページ遷移してテーマを変更した後、ブラウザバッグをするとテーマが戻ってしまうという挙動を観測しました。
+
+調べて見るとどうやらBFCache(Back Forward Cache)というものが影響していたみたいです。
+（どういう条件で発火するのかは別でちゃんと調べたい）
+<ExternalOgp url="https://techblog.yahoo.co.jp/entry/2023072430429932/"/>
+
+BFCacheが原因でテーマ設定のスクリプトが発火しないことによって、遷移後に設定したテーマが反映されていなかったので、`pageshow` イベントのリスナーをセットすることによって回避しました。
+
+```ts 
+// androidのブラウザバックのback forward cache対策
+window.addEventListener("pageshow", applyTheme);
+```
 
 ## bun shellで記事の雛形を作ってもらう
 
@@ -180,7 +217,7 @@ shellの実行が完了するとこんな感じのファイルが吐き出され
 ```mdx
 ---
 title: 最初の記事
-date: 2024-05-29T13:16:07.130Z
+date: 2024-06-02T13:16:07.130Z
 description: 
 ---
 ```
@@ -190,6 +227,7 @@ shellの最後にエディタで作成したファイルを開く記述をして
 ```shell
 await $`code ./app/articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx`;
 ```
+
 
 ## おわりに
 
