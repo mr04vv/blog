@@ -3,7 +3,7 @@ import { jsxRenderer, useRequestContext } from "hono/jsx-renderer";
 import { Script } from "honox/server";
 import { Header } from "../components/header";
 import { blogName } from "../constants";
-import ThemeButton from "../islands/button";
+import ThemeButton from "../islands/themeButton";
 import styles from "../styles/style.css?url";
 
 export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
