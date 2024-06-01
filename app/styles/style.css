@@ -44,6 +44,10 @@ body {
   @apply text-base leading-7 my-4;
 }
 
+.markdown blockquote > p{
+  @apply text-sm
+}
+
 .markdown h1 {
   @apply leading-tight text-3xl mb-0 mt-6 pb-2 font-bold;
 }
@@ -69,13 +73,16 @@ body {
 }
 
 .markdown blockquote {
-  @apply text-base border-l-4 border-gray-300 pl-4 pr-4 text-gray-600;
+  @apply text-sm border-l-4 border-gray-300 pl-4 pr-4 text-gray-600 dark:text-gray-300;
 }
 
-.markdown code {
-  @apply font-mono text-sm inline bg-gray-200 text-gray-600 rounded px-1.5 py-1 tracking-wide;
+.markdown code:not([data-theme="moonlight-ii"]) {
+  @apply font-mono text-sm inline bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-200 rounded px-1.5 py-1 mx-0.5 tracking-wide;
 }
 
+.markdown code[data-theme="moonlight-ii"] {
+  @apply font-mono text-sm;
+}
 .markdown pre {
   @apply bg-gray-100 rounded p-1;
 }
