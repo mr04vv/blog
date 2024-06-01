@@ -126,14 +126,3 @@ body {
 .sr-only {
   @apply border-t border-gray-300 my-3;
 }
-
-
-
-@font-face {
-  font-family: "NotoSansJP";
-  src: url("../assets/fonts/NotoSansJP-VariableFont_wght.ttf") format("truetype");
-}
-
-html {
-  font-family: "NotoSansJP", sans-serif;
-}
