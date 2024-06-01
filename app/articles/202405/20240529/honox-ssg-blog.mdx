@@ -1,43 +1,99 @@
 ---
-title: HonoxのSSGで個人ブログを構築しました
+title: HonoXのSSGで個人ブログを構築しました
 date: 2024-05-29T11:51:03.423Z
-description: 個人ブログを開設する機運が高まっていたのでHonoxのSSGで個人ブログを構築しました。
+description: 個人ブログを開設する機運が高まっていたのでHonoXのSSGで個人ブログを構築しました。
 iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Fire/Flat/fire_flat.svg 
 ---
 
-最近アウトプットが全然出来ておらず、個人ブログを開設する機運が高まっていたところに、Honoxという試したい技術が出てきて良い機会だったので勉強がてら個人ブログを作ってみました。
+個人ブログを開設する機運が高まっていたところに、HonoXという試したい技術が出てきたので勉強がてら個人ブログを作ってみました。
 
-直近はしずかなインターネットで戯言を記していたのですが、せっかくの機会なので思い切って移行しようと思います。
+今回ブログを構築する過程で調べたこと等をまとめていこうと思います。
 
-markdown 形式で書けるからすごい書きやすいね〜〜〜
+## HonoXでSSGを始める
+
+HonoXとは [@yusukebe](https://x.com/yusukebe)さんが作っているHonoとViteを組み合わせたフルスタックのWebフレームワークです。
+SSRが高速だったりCloudflareとの相性が抜群だったり何かとイケているフレームワークだったので時代の波に乗って使ってみました。
+
+[手順に](https://github.com/honojs/honox?tab=readme-ov-file#starter-template) に沿って始めればすぐに動きます。
+
+<ExternalOgp url="https://github.com/honojs/honox"/>
+
+SSGは `hono` にある `@hono/vite-ssg` プラグインを使えば簡単に出来て、以下のように`vite.config.ts` に追加すればビルド時に静的ファイルを吐き出してくれます。
+```ts title="vite.config.ts" showLineNumbers
+import honox from 'honox/vite'
+import ssg from '@hono/vite-ssg'
+import { defineConfig } from 'vite'
+
+const entry = './app/server.ts'
+
+export default defineConfig(() => {
+  return {
+    plugins: [honox(), ssg({ entry })]
+  }
+})
+```
+
+### クライアントコードを分離する
+
+SSGはそのままではクライアントjsを動かせないので、 `islands` コンポーネントを使用して、サーバー側でレンダリングされたHTMLに対して後からハイドレーションを行っているようです。
+
+そうすることによってインタラクティブな部分以外を先にサーバー側で完成させることが出来て、結果的にパフォーマンスとUXの向上が見込めます。
+
+`islands` コンポーネントは `/islands`ディレクトリに書くか、`_**.island.tsx` というファイル名にするか 先頭に`$`をつける(`$hoge.tsx`)と `islands`コンポーネントとして判定されるみたいです。(間違ってたらすいません)
 
 
+```ts title="honox/src/client/client.ts"
+  const FILES = options?.ISLAND_FILES ?? {
+    ...import.meta.glob('/app/islands/**/[a-zA-Z0-9-]+.tsx'),
+    ...import.meta.glob('/app/**/_[a-zA-Z0-9-]+.island.tsx'),
+    ...import.meta.glob('/app/**/$[a-zA-Z0-9-]+.tsx'),
+  }
+```
 
+> You can bring your own renderer using a UI library like React, Preact, Solid, or others.
 
+rendererはデフォルトでは `hono/jsx`のものが使われますが、[README](https://github.com/honojs/honox/tree/main?tab=readme-ov-file#byor---bring-your-own-renderer)に書かれているように、Reactのrendereを使うこともできるみたいです。が、今回は試してません。
 
-
-## /** 執筆途中です！**/
-
-↓↓↓OGPテスト
-<ExternalOgp url="https://mooriii.com"/>
-<ExternalOgp url="https://github.com"/>
-<ExternalOgp url="https://github.com/mr04vv"/>
-<ExternalOgp url="https://github.com/mr04vv/blog"/>
-
-
-## Honoxを始める
-
-// ここに始めてからSSGするまでの変遷を書く
-
-// 執筆途中
 
 ## MDXを使えるようにする
 
-// MDXを使えるようにする手順をまとめる
+今回初めてMDXに触れたんですが、こいつの破壊力が抜群すぎて感動しました。
+
+### MDXとは
+[MDX](https://mdxjs.com/)とは、簡単に言うとMarkdownの中でJSXが書けちゃうもので、独自のコンポーネントを使った拡張も出来てかなり執筆体験が良いです。
+
+例えば
+
+```mdx
+## テスト
+ポートフォリをサイトを作りました
+<a href="https://mooriii.com">リンク</a>
+<ExternalOgp url="https://mooriii.com"/>
+```
+
+みたいな感じでReactのノリでMarkdownの中に独自で定義したコンポーネントを呼び出すことが出来ます。
 
 ### frontmatterでメタデータを設定する
 
-// frontmatterについて書く
+[`remark-frontmatter`](https://github.com/remarkjs/remark-frontmatter) と [`remark-mdx-frontmatter`](https://github.com/remcohaszing/remark-mdx-frontmatter)を使うと、mdxファイルの先頭の `---` で囲んだ部分をメタデータっぽく扱うことが出来ます。
+
+```mdx
+---
+title: 記事のタイトル
+description: 説明
+---
+
+（記事の内容）
+```
+
+`_renderer.tsx` で設定した値をpropsとして受け取ることが出来ます。
+
+```tsx
+export default jsxRenderer(({ children, frontmatter }) => {
+  const title = frontmatter?.title ?? "" // 記事のタイトル
+  const description = frontmatter?.description ?? "" // 説明
+```
+
 
 ### マークダウン記法で使われるコンポーネントを独自のものに差し替える
 
@@ -47,12 +103,38 @@ markdown 形式で書けるからすごい書きやすいね〜〜〜
 ```
 例えばこんな感じで画像を参照させても、内部的に独自の画像用コンポーネントを使うことも可能です。
 
-// useMdxComponentsとviteconfigの設定を書く
+
+```tsx
+const AnchorLink = ({href, children}) => {
+  return <a href={href} target="_blank">{children}</a>
+}
+
+export function useMDXComponents(): MDXComponents {
+  const components = {
+    ExternalOgp: ExternalOgp, // 独自コンポーネント
+    a: AnchorLink,
+  };
+  return components;
+}
+```
+
+定義されていない独自のコンポーネントも追加できるので、mdxファイル内でJSXを書いてあげるといい感じにしてくれます。
+
+```mdx
+## カスタムのコンポーネント
+<ExternalOgp url="https://mooriii.com"/>
+```
+
+`ExternalOgp`は実際にはこんな感じで表示されます↓↓
+
+<ExternalOgp url="https://mooriii.com"/>
+
+（`ExternalOgp`の実装は[こちら](https://github.com/mr04vv/blog/blob/main/app/lib/mdxComponents/externalOgp.tsx)）
+
 
 ### シンタックスハイライトを導入する
 
-記事内にコードを載せたい場合に必須になるシンタックスハイライトを導入します。
-今回は[Rehype Pretty Code](https://rehype-pretty.pages.dev/)を使ってシンタックスハイライトを実現しました。
+今回は[Rehype Pretty Code](https://rehype-pretty.pages.dev/)を使ってシンタックスハイライトを実現しましたが、これもかなり強力で感動しっぱなしでした。
 
 こんな感じで行数表示とか行ハイライトとかいい感じにやってくれます。
 ```tsx showLineNumbers{} title="sample.tsx" {5,8-9} /setFloating/#s /refs/#v /adapter/
@@ -69,12 +151,7 @@ function MyComponent() {
   );
 }
 ```
-A note[^nasa]
-
-[^nasa]: Big note.
-
-
-// ここに設定方法とリンクのOGPっぽいものを表示する
+設定方法等はまた次の機会に。
 
 ## ルーティングの設定
 
@@ -106,8 +183,6 @@ title: 最初の記事
 date: 2024-05-29T13:16:07.130Z
 description: 
 ---
-
-# 最初の記事
 ```
 
 shellの最後にエディタで作成したファイルを開く記述をしているので、作成後にエディタで開いてくれるのですが、これが地味に便利です。
@@ -118,11 +193,18 @@ await $`code ./app/articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx`;
 
 ## おわりに
 
-結構どん詰まりしまくって大変でしたが、久しぶりに色んな知らない技術をさわれたので楽しかったです。
+久しぶりに知らない技術にたくさん出会えてかなり楽しい開発でした。HonoXの開発体験も神がかっていて最高の機会になりました。
 
-機能追加とかUIデザインとかフォント選びとかまだまだ色々とやりたいことがたくさんあるので少しずつアップデートしていこうと思います。
+今回使った技術は、どれも少し設定しただけで色々よしなにやってくれすぎて、内部で何をやっているか分からないまま作れちゃいました。
+
+それ故にエラーに出会ったときに全然解消出来なかったりしたので、ちゃんと深いところまで潜って勉強しないとな〜という内省にも繋がりました。
+
+実際はかなりどん詰まりしたので、「何につまってどう解決していったのか」を次回以降少しずつ書いていこうかなと思っています。
 
 
+このブログ自体も少しずつアップデートできたらいいな〜なんて思ってます。
+
+最後は愛猫のらての写真でお別れしましょう。
 
 それでは。
 
