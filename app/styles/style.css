@@ -13,7 +13,7 @@ body {
 }
 
 .markdown {
-  @apply dark:text-gray-100 break-words box-border tracking-wide ;
+  @apply dark:text-gray-100 break-words box-border tracking-wide;
 }
 
 .markdown > * + * {
@@ -119,11 +119,10 @@ body {
 
 
 .data-footnote-backref {
-  @apply no-underline text-sm;
+  @apply text-sm;
   font-family: Hiragino Kaku Gothic ProN;
 }
 
 .sr-only {
   @apply border-t border-gray-300 my-3;
 }
-

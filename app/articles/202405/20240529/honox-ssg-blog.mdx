@@ -9,6 +9,12 @@ iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/
 
 直近はしずかなインターネットで戯言を記していたのですが、せっかくの機会なので思い切って移行しようと思います。
 
+markdown 形式で書けるからすごい書きやすいね〜〜〜
+
+
+
+
+
 
 ## /** 執筆途中です！**/
 
@@ -63,6 +69,10 @@ function MyComponent() {
   );
 }
 ```
+A note[^nasa]
+
+[^nasa]: Big note.
+
 
 // ここに設定方法とリンクのOGPっぽいものを表示する
 
@@ -86,7 +96,7 @@ function MyComponent() {
 
 いちいち該当ディレクトリに記事ファイルを作成するのと、記事のメタデータ(frontmatter)に作成日を入れるのも面倒だったので、[bun shell]()でファイルの自動作成とメタデータの生成をやってもらうことにしました。
 
-![](createEntry.gif)
+![the creation of mdx templates](createEntry.gif)
 
 shellの実行が完了するとこんな感じのファイルが吐き出されます。
 
@@ -117,3 +127,6 @@ await $`code ./app/articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx`;
 それでは。
 
 ![愛猫のらてさん](latte.jpg)
+
+
+
