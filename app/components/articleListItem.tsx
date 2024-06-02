@@ -1,3 +1,5 @@
+import { formattedDate } from "../lib/date";
+
 type Props = {
   title: string;
   date: string;
@@ -24,7 +26,7 @@ export const ArticleListItem = (props: Props) => {
             <time
               class={"text-gray-500 dark:text-gray-400 text-sm max-md:text-xs"}
             >
-              {new Date(props.date).toLocaleDateString("ja-JP")}
+              {formattedDate(props.date)}
             </time>
           </div>
         </div>

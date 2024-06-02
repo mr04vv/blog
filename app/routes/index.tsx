@@ -1,6 +1,6 @@
 import { Fragment } from "hono/jsx/jsx-runtime";
 import { createRoute } from "honox/factory";
-import { ArticleListItem } from "../components/articleListIte";
+import { ArticleListItem } from "../components/articleListItem";
 import { getPosts } from "../lib/posts";
 
 export default createRoute((c) => {

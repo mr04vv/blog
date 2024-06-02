@@ -1,11 +1,12 @@
 import { Fragment } from "hono/jsx/jsx-runtime";
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
-import { ArticleListItem } from "../../components/articleListIte";
+import { ArticleListItem } from "../../components/articleListItem";
 import { Footer } from "../../components/footer";
 import { XIcon } from "../../components/icons";
 import { Profile } from "../../components/profile";
 import { TitleIcon } from "../../components/titleIcon";
+import { formattedDate } from "../../lib/date";
 import {
   getLatestPostsWithoutTargetPost,
   getPostByEntryName,
@@ -28,9 +29,7 @@ export default createRoute(
 
     const post = getPostByEntryName(slug);
     const pageTitle = post?.frontmatter.title ?? "";
-    const date = new Date(post?.frontmatter.date ?? "").toLocaleDateString(
-      "ja-JP",
-    );
+    const date = formattedDate(post?.frontmatter.date ?? "");
 
     const latestPosts = getLatestPostsWithoutTargetPost(post?.entryName ?? "");
     const hasLatestPosts = latestPosts.length > 0;
