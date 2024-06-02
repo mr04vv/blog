@@ -18,44 +18,50 @@ const result = await prompts([
 const entryTitle = result.entryTitle as string;
 const entryPath = result.entryPath as string;
 
-// YYYYmmddの形式で今日の日付を取得
-const today = new Date();
-const year = today.getFullYear();
-const month = today.getMonth() + 1;
-const day = today.getDate();
-const formattedMonth = month < 10 ? `0${month}` : month;
-const formattedDay = day < 10 ? `0${day}` : day;
-const YYYYmm = `${year}${formattedMonth}`;
-const YYYYmmdd = `${year}${formattedMonth}${formattedDay}`;
+// yyyyMMddの形式で今日の日付を取得
+const date = new Date();
+const yyyyMM = date
+  .toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+  })
+  .replace("/", "");
+const yyyyMMdd = date
+  .toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+  .replaceAll("/", "");
 
-const { exitCode } = await $`ls ./app/articles/${YYYYmm}`.quiet();
+const { exitCode } = await $`ls ./app/articles/${yyyyMM}`.quiet();
 
 // MEMO: 今日の日付のディレクトリを生成
 if (exitCode !== 0) {
-  await $`mkdir ./app/articles/${YYYYmm}`;
-  await $`mkdir ./app/articles/${YYYYmm}/${YYYYmmdd}`;
+  await $`mkdir ./app/articles/${yyyyMM}`;
+  await $`mkdir ./app/articles/${yyyyMM}/${yyyyMMdd}`;
 } else {
-  const { exitCode } = await $`ls ./app/articles/${YYYYmm}/${YYYYmmdd}`.quiet();
+  const { exitCode } = await $`ls ./app/articles/${yyyyMM}/${yyyyMMdd}`.quiet();
   if (exitCode !== 0) {
-    await $`mkdir ./app/articles/${YYYYmm}/${YYYYmmdd}`;
+    await $`mkdir ./app/articles/${yyyyMM}/${yyyyMMdd}`;
   }
 }
 
 // MEMO: ファイルを生成
-await $`touch ./app/articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx`;
+await $`touch ./app/articles/${yyyyMM}/${yyyyMMdd}/${entryPath}.mdx`;
 
 const frontMatter = `---
 title: ${entryTitle}
-date: ${today.toISOString()}
+date: ${date.toISOString()}
 description: 
 ---
 `;
 
 await promises.writeFile(
-  `./app/articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx`,
+  `./app/articles/${yyyyMM}/${yyyyMMdd}/${entryPath}.mdx`,
   frontMatter,
 );
 
-await $`echo articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx is created.`;
+await $`echo articles/${yyyyMM}/${yyyyMMdd}/${entryPath}.mdx is created.`;
 
-await $`code ./app/articles/${YYYYmm}/${YYYYmmdd}/${entryPath}.mdx`;
+await $`code ./app/articles/${yyyyMM}/${yyyyMMdd}/${entryPath}.mdx`;
