@@ -57,7 +57,7 @@ export default createRoute(
         <div class={"mt-10 flex items-center justify-center gap-2"}>
           <span>この記事をシェアする</span>
           <a
-            href={`https://twitter.com/share?url=https://blog.mooriii.com/${
+            href={`https://twitter.com/share?url=https://blog.mooriii.com/entry/${
               post?.entryName
             }&text=${post?.frontmatter.title}${" - "}mooriii's blog`}
             class={"flex hover:opacity-70 transition-opacity"}
