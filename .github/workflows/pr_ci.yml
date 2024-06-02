@@ -50,3 +50,19 @@ jobs:
 
       - name: Run typecheck
         run: bun run typecheck
+
+  textlint:
+    name: Textlint
+    timeout-minutes: 15
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup_bun
+
+      - name: Run textlint
+        run: bun run lint:text
