@@ -7,14 +7,14 @@ iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/
 
 個人ブログを開設する機運が高まっていたところに、HonoXという試したい技術が出てきたので勉強がてら個人ブログを作ってみました。
 
-今回ブログを構築する過程で調べたこと等をまとめていこうと思います。
+今回ブログを構築する過程で調べたこと等をまとめていきます。
 
 ## HonoXでSSGを始める
 
 HonoXとは [@yusukebe](https://x.com/yusukebe)さんが作っているHonoとViteを組み合わせたフルスタックのWebフレームワークです。
 SSRが高速だったりCloudflareとの相性が抜群だったり何かとイケているフレームワークだったので時代の波に乗って使ってみました。
 
-[手順に](https://github.com/honojs/honox?tab=readme-ov-file#starter-template) に沿って始めればすぐに動きます。
+[手順](https://github.com/honojs/honox?tab=readme-ov-file#starter-template) に沿って始めればすぐに動きます。
 
 <ExternalOgp url="https://github.com/honojs/honox"/>
 
@@ -35,11 +35,14 @@ export default defineConfig(() => {
 
 ### クライアントコードを分離する
 
-SSGはそのままではクライアントjsを動かせないので、 `islands` コンポーネントを使用して、サーバー側でレンダリングされたHTMLに対して後からハイドレーションを行っているようです。
+SSGはそのままだとクライアントjsを動かせないので、 `islands` コンポーネントを使用して、サーバー側でレンダリングされたHTMLに対して後からハイドレーションを行っているようです。
 
 そうすることによってインタラクティブな部分以外を先にサーバー側で完成させることが出来て、結果的にパフォーマンスとUXの向上が見込めます。
 
-`islands` コンポーネントは `/islands`ディレクトリに書くか、`_**.island.tsx` というファイル名にするか 先頭に`$`をつける(`$hoge.tsx`)と `islands`コンポーネントとして判定されるみたいです。(間違ってたらすいません)
+`islands` コンポーネントは以下のルールで作成すると認識されます。(間違ってたらすいません)
+-  `/islands`ディレクトリに書く
+- `_**.island.tsx` というファイル名にする
+- 先頭に`$`をつける(`$hoge.tsx`)
 
 
 ```ts title="honox/src/client/client.ts"
@@ -63,7 +66,7 @@ rendererはデフォルトでは `hono/jsx`のものが使われますが、[REA
 ### MDXとは
 [MDX](https://mdxjs.com/)とは、簡単に言うとMarkdownの中でJSXが書けちゃうもので、独自のコンポーネントを使った拡張も出来てかなり執筆体験が良いです。
 
-例えば
+例えばこんな感じです。
 
 ```mdx
 ## テスト
@@ -166,7 +169,7 @@ function MyComponent() {
 
 
 ## OGPもSSGのビルド時に生成するようにした
-今回はSSGで事前にHtmlを生成するようにしたのですが、記事のタイトルで変化するOGPもビルド時に生成するようにしました。
+今回はSSGで事前にHtmlを生成するようにしたのですが、記事のタイトルで変化するOGPも自動生成することにしました。
 
 [@berlysia](https://x.com/berlysia)さんの[記事](https://blog.berlysia.net/entry/2024-02-29-honox-og-image)と[リポジトリ](https://github.com/berlysia/blog.berlysia.net)を参考にさせてもらいながら進めました。
 
@@ -205,10 +208,10 @@ window.addEventListener("pageshow", applyTheme);
 
 ## bun shellで記事の雛形を作ってもらう
 
-本ブログの記事のmdxファイルは `articles/yyyyMM/yyyyMMdd/**.mdx` というディレクトリの中に保存するようにしています。
-（絶対に日付順に並んでいて欲しいのと、記事が溜まってきてもある程度縦に長くならないようにしたいという強いこだわりの結果こうなりました🥹）
+本ブログの記事のmdxファイルは `articles/yyyyMM/yyyyMMdd/**.mdx` というディレクトリの中に保存しています。
+（絶対に日付順で並んでいて欲しいのと、記事が溜まってきてもフォルダの中身が多くなりすぎないようにしたいという強いこだわりの結果こうなりました🥹）
 
-いちいち該当ディレクトリに記事ファイルを作成するのと、記事のメタデータ(frontmatter)に作成日を入れるのも面倒だったので、[bun shell]()でファイルの自動作成とメタデータの生成をやってもらうことにしました。
+いちいち該当ディレクトリにファイルを作成したり、記事のメタデータ(frontmatter)に作成日を入れるのが面倒だったので、[bun shell]()でファイルとメタデータの生成をやってもらいます。
 
 ![the creation of mdx templates](createEntry.webp)
 
@@ -231,11 +234,11 @@ await $`code ./app/articles/${yyyyMM}/${yyyyMMdd}/${entryPath}.mdx`;
 
 ## おわりに
 
-久しぶりに知らない技術にたくさん出会えてかなり楽しい開発でした。HonoXの開発体験も神がかっていて最高の機会になりました。
+久しぶりに新しい技術をたくさん触れたのでかなり楽しい開発でした。HonoXの開発体験も神がかっていて最高の機会になりました。
 
 今回使った技術は、どれも少し設定しただけで色々よしなにやってくれすぎて、内部で何をやっているか分からないまま作れちゃいました。
 
-それ故にエラーに出会ったときに全然解消出来なかったりしたので、ちゃんと深いところまで潜って勉強しないとな〜という内省にも繋がりました。
+それ故にエラーに出会っても全然解消出来なかったりしたので、ちゃんと深いところまで潜って勉強しないとな〜という内省にも繋がりました。
 
 実際はかなりどん詰まりしたので、「何につまってどう解決していったのか」を次回以降少しずつ書いていこうかなと思っています。
 
