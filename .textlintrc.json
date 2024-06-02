@@ -1,0 +1,30 @@
+{
+  "plugins": {
+    "@textlint/markdown": {
+      "extensions": [".md"]
+    }
+  },
+  "rules": {
+    "preset-ja-technical-writing": {
+      "no-exclamation-question-mark": {
+        "allowFullWidthExclamation": true,
+        "allowFullWidthQuestion": true
+      }
+    },
+    "preset-ja-spacing": {
+      "ja-space-between-half-and-full-width": {
+        "space": "always",
+        "exceptPunctuation": true
+      },
+      "ja-space-around-code": {
+        "before": true,
+        "after": true
+      }
+    },
+    "ja-technical-writing/ja-no-mixed-period": {
+      "allowPeriodMarks": [":"]
+    },
+    "ja-technical-writing/ja-no-weak-phrase": false,
+    "ja-technical-writing/sentence-length": false
+  }
+}

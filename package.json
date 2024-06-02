@@ -6,8 +6,8 @@
     "build": "vite build --mode client && vite build",
     "preview": "wrangler pages dev",
     "deploy": "$npm_execpath run build && wrangler pages deploy",
-    "fmt": "biome format --write ./app",
-    "fmt-check": "biome format ./app",
+    "fmt": "biome format --write ./",
+    "fmt-check": "biome format ./",
     "lint": "biome lint ./app",
     "lint-fix": "biome lint --apply ./app",
     "lint-fix-unsafe": "biome lint --apply-unsafe ./app",
@@ -44,6 +44,7 @@
     "postcss": "8.4.38",
     "prompts": "2.4.2",
     "tailwindcss": "3.4.3",
+    "textlint": "14.0.4",
     "vite": "5.2.12",
     "vite-plugin-static-copy": "1.0.5",
     "wrangler": "3.58.0"
