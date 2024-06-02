@@ -14,8 +14,16 @@
   },
   "formatter": {
     "enabled": true,
-    "formatWithErrors": false,
-    "ignore": [],
+    "formatWithErrors": true,
+    "include": [
+      "**/*.js",
+      "**/*.ts",
+      "**/*.json",
+      "**/*.tsx",
+      "**/*.jsx",
+      "**/*.mdx"
+    ],
+    "ignore": ["node_modules", ".wrangler", "dist"],
     "attributePosition": "auto",
     "indentStyle": "space",
     "indentWidth": 2,
@@ -23,6 +31,9 @@
     "lineWidth": 80
   },
   "json": {
+    "parser": {
+      "allowTrailingCommas": true
+    },
     "formatter": {
       "trailingCommas": "none"
     }
