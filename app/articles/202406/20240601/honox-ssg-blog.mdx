@@ -54,7 +54,7 @@ SSGはそのままだとクライアントjsを動かせないので、 `islands
 ```
 
 
-rendererはデフォルトでは `hono/jsx`のものが使われますが、[README](https://github.com/honojs/honox/tree/main?tab=readme-ov-file#byor---bring-your-own-renderer)に書かれているように、React等のrendereを使うこともできるみたいです。が、今回は試してません。
+rendererはデフォルトでは `hono/jsx`のものが使われますが、[README](https://github.com/honojs/honox/tree/main?tab=readme-ov-file#byor---bring-your-own-renderer)に書かれているように、React等のrendererを使うこともできるみたいです。が、今回は試してません。
 
 > You can bring your own renderer using a UI library like React, Preact, Solid, or others.
 
@@ -168,8 +168,8 @@ function MyComponent() {
 設定方法等はまた次の機会に。
 
 
-## OGPもSSGのビルド時に生成するようにした
-今回はSSGで事前にHtmlを生成するようにしたのですが、記事のタイトルで変化するOGPも自動生成することにしました。
+## OGP画像もSSGのビルド時に生成するようにした
+今回はSSGで事前にHtmlを生成するようにしたのですが、[satori](https://github.com/vercel/satori)を使ってビルド時に動的なOGP画像も自動生成することにしました。
 
 [@berlysia](https://x.com/berlysia)さんの[記事](https://blog.berlysia.net/entry/2024-02-29-honox-og-image)と[リポジトリ](https://github.com/berlysia/blog.berlysia.net)を参考にさせてもらいながら進めました。
 
@@ -177,9 +177,11 @@ function MyComponent() {
 
 動的ルーティングでいい感じにしたことと、ビルドの設定や[budoux](https://github.com/google/budoux)の導入に躓いた事は次回以降の記事で書いていきます。
 
-結果的にmdxから記事のタイトルを抽出したOGPを生成してくれるようになりました。
+結果的にmdxから記事のタイトルを抽出したOGP画像を生成してくれるようになりました。
 
 ![ogp](honox-ssg-blog.webp)
+
+OGP画像のデバッグは [Vercel OG Image Playground](https://og-playground.vercel.app/)が便利でした。
 
 ## ダークモード対応
 
