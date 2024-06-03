@@ -22,7 +22,7 @@
     "@mdx-js/rollup": "3.0.1",
     "@resvg/resvg-js": "2.6.2",
     "budoux": "0.6.2",
-    "hono": "4.4.2",
+    "hono": "4.4.3",
     "honox": "0.1.18",
     "jsdom": "24.1.0",
     "rehype-highlight": "7.0.0",
