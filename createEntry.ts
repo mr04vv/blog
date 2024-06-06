@@ -2,18 +2,25 @@ import { promises } from "node:fs";
 import { $ } from "bun";
 import prompts from "prompts";
 
-const result = await prompts([
+const result = await prompts(
+  [
+    {
+      type: "text",
+      name: "entryTitle",
+      message: "記事のタイトルを入力してください:",
+    },
+    {
+      type: "text",
+      name: "entryPath",
+      message: "記事のuriを入力してください:",
+    },
+  ],
   {
-    type: "text",
-    name: "entryTitle",
-    message: "記事のタイトルを入力してください:",
+    onCancel: () => {
+      process.exit(0);
+    },
   },
-  {
-    type: "text",
-    name: "entryPath",
-    message: "記事のuriを入力してください:",
-  },
-]);
+);
 
 const entryTitle = result.entryTitle as string;
 const entryPath = result.entryPath as string;
