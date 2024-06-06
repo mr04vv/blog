@@ -35,31 +35,34 @@ Brunoのissueで道を切り開いている人がいたので参考にしてみ�
 
 
 ```js showLineNumbers
+
+// brunoのenvから変数を取得
 const username = bru.getEnvVar("user_id")
 const password = bru.getEnvVar("password")
 const clientId = bru.getEnvVar("cognito_client_id")
 const requestBody = {
-AuthFlow: 'USER_PASSWORD_AUTH',
-ClientId: clientId,
-AuthParameters: {
-    USERNAME: username,
-    PASSWORD: password,
-},
+    AuthFlow: 'USER_PASSWORD_AUTH',
+    ClientId: clientId,
+    AuthParameters: {
+        USERNAME: username,
+        PASSWORD: password,
+    },
 }
 
 const request = {
-method: 'post',
-headers: {
-    'content-type': 'application/x-amz-json-1.1',
-    'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth',
-},
-body: JSON.stringify(requestBody),
+    method: 'post',
+    headers: {
+        'content-type': 'application/x-amz-json-1.1',
+        'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth',
+    },
+    body: JSON.stringify(requestBody),
 }
 
 const region = bru.getEnvVar("region")
 const authResponse = await fetch(`https://cognito-idp.${region}.amazonaws.com`, request)
 const { AuthenticationResult } = await authResponse.json()
 const token = AuthenticationResult.IdToken
+// リクエストのヘッダーにtokenを付与
 req.setHeader('Authorization', `Bearer ${token}`)
 
 ```
