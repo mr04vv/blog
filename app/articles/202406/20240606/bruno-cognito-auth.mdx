@@ -1,0 +1,83 @@
+---
+title: BrunoでAPIリクエストの前にCognitoの認証を通す
+date: 2024-06-06T12:34:22.639Z
+description: Brunoを使ってAPIのリクエストを送るときにCognitoの認証を通す方法をまとめます
+iconUrl: https://docs.usebruno.com/bruno.png
+---
+
+もともとAPIクライアントとして[Postman](https://www.postman.com/)を使っていたのですが、設定ファイルをGithubで設定ファイルを共有出来て、envファイルで環境変数を管理できるので[Bruno](https://www.usebruno.com/)に乗り換えました。
+
+
+BrunoはオープンソースのAPIクライアントで、リクエスト等の設定ファイルをGithubで管理できるので複数人数で共有するときに非常に便利なツールです。
+
+ちゃんと調べてないですが結構色んなことが出来そうです（適当）
+
+使用感もPostmanとほとんど変わらないので割とすんなり移行出来ました。
+
+## BrunoのAuth機能では各リクエストの前に実行はしてくれない
+
+PostmanではAuthorization機能を利用して、各リクエストの前にOAuthの認証を通すことが出来ます。
+
+BrunoはAuth機能こそあるものの、各リクエストの前に実行してもらうということが（2024/06/06時点だと）出来ないみたいです。（間違ってたらすいません）
+
+## Scriptを書いて無理やりヘッダーにTokenを付与する
+
+BrunoのCollectionのSettingを開くと、Collectionで共通する設定ができるようです。
+
+![brunoのCollection共通の設定](bruno.webp)
+
+今回はそれを利用してCollection内のすべてのリクエストの前に共通の処理をすることにします。
+
+Brunoのissueで道を切り開いている人がいたので参考にしてみました。
+
+<ExternalOgp url="https://github.com/usebruno/bruno/discussions/385#discussioncomment-7985548"/>
+
+
+
+```js showLineNumbers
+const username = bru.getEnvVar("user_id")
+const password = bru.getEnvVar("password")
+const clientId = bru.getEnvVar("cognito_client_id")
+const requestBody = {
+AuthFlow: 'USER_PASSWORD_AUTH',
+ClientId: clientId,
+AuthParameters: {
+    USERNAME: username,
+    PASSWORD: password,
+},
+}
+
+const request = {
+method: 'post',
+headers: {
+    'content-type': 'application/x-amz-json-1.1',
+    'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth',
+},
+body: JSON.stringify(requestBody),
+}
+
+const region = bru.getEnvVar("region")
+const authResponse = await fetch(`https://cognito-idp.${region}.amazonaws.com`, request)
+const { AuthenticationResult } = await authResponse.json()
+const token = AuthenticationResult.IdToken
+req.setHeader('Authorization', `Bearer ${token}`)
+
+```
+
+これをScriptに書いてあげれば、各リクエストの前にAuthorizationヘッダーを付与してくれます。
+
+## おわりに
+
+今回はBrunoで各リクエストの前にCognitoの認証を通す方法を書きました。
+
+Brunoはenvファイルを使って環境変数を管理出来たり、 `package.json` でパッケージを管理してScriptで使えたりと、かなりプログラマブルなAPIクライアントです。
+
+個人的にはGithubでファイルが管理できるので個人・仕事関係なく活用しやすいと思ってます。
+
+Bruno自体もまだまだ活発に開発が行われているみたいなので今後に期待しています。
+
+いつかコントリビュートしてみようかな。
+
+ではまた。
+
+![愛猫のらてさん](latte2.webp)
