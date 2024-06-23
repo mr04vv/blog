@@ -43,8 +43,8 @@ export default createRoute(
         <div class={"flex flex-col mb-10 items-center"}>
           <TitleIcon iconUrl={post?.frontmatter.iconUrl ?? ""} />
           <h1
-            class={`text-center leading-tight text-3xl mb-0 mt-6 pb-2 font-bold flex auto-phrase justify-center ${
-              titleLen > 20 && "w-[90%]"
+            class={`text-center leading-tight text-3xl mb-0 mt-6 pb-2 font-bold flex justify-center md:auto-phrase ${
+              titleLen > 20 && "md:w-[90%]"
             }`}
           >
             {splitedTitle}
