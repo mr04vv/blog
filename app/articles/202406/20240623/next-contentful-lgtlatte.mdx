@@ -19,7 +19,7 @@ iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/
 ## Nextアプリケーションの作成とVercelの連携
 
 ### Nextアプリケーションの作成
-まずはnextのアプリケーションを作成します。
+まずはNextのアプリケーションを作成します。
 
 ```sh
 pnpm create next-app lgtlatte
@@ -48,17 +48,17 @@ git push -u origin main
 Importが成功すると以下のような画面が開くので、Deployをクリックします
 ![Vervelのデプロイ画面](vercel-deploy.webp)
 
-こんな感じの画面が出ればOKです。
+デプロイが完了してこんな感じの画面が出ればOKです。
 
 ![デプロイ成功](vercel-deploy-complete.webp)
 
 ## Contentfulの設定
 今回はヘッドレスCMSとしてContentfulを使用します。
 
-Contentfulの全体像は[こちら](https://dev.classmethod.jp/articles/contentful/)の記事を参照してください。
+Contentfulの全体像は[こちら](https://dev.classmethod.jp/articles/contentful/)の記事が参考になります。
 <ExternalOgp url="https://dev.classmethod.jp/articles/contentful/"/>
 
-Contentfulのアカウントを作成するとBlankという名前のSpaceが作られているのでそれを使います。
+アカウントを作成するとBlankという名前のSpaceが作られているのでそれを使います。
 
 Space Nameは画面右上の[Settings]→[General settings]で変更できます。
 
@@ -260,3 +260,21 @@ Vercelのプロジェクトの設定画面からWebhookのURLを生成し、コ�
 
 Github Actionsでのビルドも同様にContentful側の変更をトリガーにしてWebhook経由で実行できるみたいです。
 
+<ExternalOgp url="https://www.contentful.com/blog/running-static-site-builds-with-github-actions-and-contentful/"/>
+
+今回作成したサイトとGitHubのリポジトリはこちらです。
+<ExternalOgp url="https://github.com/mr04vv/lgtlatte"/>
+<ExternalOgp url="https://github.com/mr04vv/lgtlatte"/>
+
+## おわりに
+
+ヘッドレスCMS初挑戦だったんですが、かなり便利でした。
+特にWebhook経由でコンテンツの更新時にSSGのビルドを自動で走らせることができるので、更新の手間が省けてとても楽になりました。
+
+GraphQLもかなり久しぶりに触ったので知識があやふやでした。また時間をとって復習します。
+
+フロントエンダーのはずなのにフロントエンドの知識が浅くて恥ずかしくなってくるので、色々試しつつ基礎もしっかり勉強していかないとな〜となっているところです。
+
+ではまた次回お会いしましょう。
+
+![ぬいぐるみと並んでいるらてさん](latte3.webp)
