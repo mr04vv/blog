@@ -1,4 +1,5 @@
-import { Parser, jaModel } from "budoux";
+import { model as jaModel } from "budoux/dist/data/models/ja";
+import { Parser } from "budoux/dist/parser";
 import { Fragment } from "hono/jsx/jsx-runtime";
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
@@ -36,7 +37,6 @@ export default createRoute(
     const latestPosts = getLatestPostsWithoutTargetPost(post?.entryName ?? "");
     const hasLatestPosts = latestPosts.length > 0;
     const splitedTitle = parser.parse(post?.frontmatter.title ?? "");
-    console.debug(splitedTitle);
     const titleLen = pageTitle.length;
     return c.render(
       <div>
