@@ -15,10 +15,11 @@ export const ArticleImage = async (props: Props) => {
     <figure class="full-width justify-center flex">
       <a href={isFullUrl ? props.src : imageUrl}>
         <img
+          class={"object-contain max-h-96 max-w-full h-auto w-auto"}
           src={isFullUrl ? props.src : imageUrl}
           alt={props.alt}
-          width={"100%"}
-          height={"100%"}
+          width={"auto"}
+          height={"auto"}
         />
       </a>
     </figure>
