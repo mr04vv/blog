@@ -46,7 +46,7 @@ export default createRoute(
             <div
               tw={`flex justify-center  text-[${
                 // 要調整
-                titleLen > 20 ? 4.4 : 4.8
+                titleLen > 20 ? 4 : 4.8
               }rem] flex-wrap`}
             >
               {splitedTitle.map((s) => (

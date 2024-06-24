@@ -14,7 +14,8 @@
     "lint:fix": "biome lint --apply ./app",
     "lint:fix:unsafe": "biome lint --apply-unsafe ./app",
     "typecheck": "tsc --noEmit",
-    "create": "bun createEntry.ts"
+    "create": "bun createEntry.ts",
+    "convert": "bun convertImages.ts"
   },
   "private": true,
   "dependencies": {

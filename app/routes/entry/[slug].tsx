@@ -1,3 +1,5 @@
+import { model as jaModel } from "budoux/dist/data/models/ja";
+import { Parser } from "budoux/dist/parser";
 import { Fragment } from "hono/jsx/jsx-runtime";
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
@@ -12,6 +14,7 @@ import {
   getPostByEntryName,
   getPosts,
 } from "../../lib/posts";
+const parser = new Parser(jaModel);
 
 export default createRoute(
   ssgParams(() => {
@@ -33,16 +36,18 @@ export default createRoute(
 
     const latestPosts = getLatestPostsWithoutTargetPost(post?.entryName ?? "");
     const hasLatestPosts = latestPosts.length > 0;
+    const splitedTitle = parser.parse(post?.frontmatter.title ?? "");
+    const titleLen = pageTitle.length;
     return c.render(
       <div>
-        <div class={"flex flex-col mb-10"}>
+        <div class={"flex flex-col mb-10 items-center"}>
           <TitleIcon iconUrl={post?.frontmatter.iconUrl ?? ""} />
           <h1
-            class={
-              "text-center leading-tight text-3xl mb-0 mt-6 pb-2 font-bold"
-            }
+            class={`text-center leading-tight text-3xl mb-0 mt-6 pb-2 font-bold flex justify-center md:auto-phrase ${
+              titleLen > 20 && "md:w-[90%]"
+            }`}
           >
-            {post?.frontmatter.title}
+            {splitedTitle}
           </h1>
           <time
             class={

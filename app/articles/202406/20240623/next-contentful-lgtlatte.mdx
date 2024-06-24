@@ -1,0 +1,286 @@
+---
+title: Next.jsとContentfulで飼い猫のLGTM画像サイトを作成する
+date: 2024-06-24T00:25:11.375Z
+description: 
+iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Cat/Flat/cat_flat.svg
+---
+
+少し前にCloudflare PagesとHonoで愛猫「らて」のLGTM画像サイトを作成したのですが、画像のメンテナンスコストが高すぎたのでCMSへ移行しました。
+
+ヘッドレスCMSを試したことがなかったのと、Nextのアプリをちゃんと作ったことがなかったので、単純に試したかった気持ちもあります。
+<ExternalOgp url="https://sizu.me/mooriii/posts/fvx05tis26bs"/>
+
+このブログがCloudflareなので、今回はホスティング先をVercelにしました。
+
+構成は以下のような感じで、Contentfulへの画像アップロードをトリガーにして、VercelでのSSGビルドを走らせるようにしています。
+
+![デプロイフロー図](contentful-next-architecture.webp)
+
+今回作成したサイトはこちらです。
+<ExternalOgp url="https://lgtlatte-git-main-mr04vvs-projects.vercel.app/"/>
+
+## Nextアプリケーションの作成とVercelの連携
+
+### Nextアプリケーションの作成
+まずはNextのアプリケーションを作成します。
+
+```sh
+pnpm create next-app lgtlatte
+// 以下色々設定を聞かれるので好みで決める
+```
+
+これでアプリケーションが作られたら、GitHub上で[リポジトリを作成](https://docs.github.com/ja/repositories/creating-and-managing-repositories/creating-a-new-repository)してpushします。
+```sh
+cd lgtlatte
+echo "# lgtlatte" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:mr04vv/lgtlatte.git
+git push -u origin main
+```
+
+### Vercelでリポジトリを連携
+
+続いてVercelにログインして、リポジトリをImportします。
+
+アカウントが連携されていれば、Importできるリポジトリの候補が出てきますのでImportをクリックします。
+![Vercelのリポジトリimport画面](vercel-import.webp)
+
+Importが成功すると以下のような画面が開くので、Deployをクリックします
+![Vervelのデプロイ画面](vercel-deploy.webp)
+
+デプロイが完了してこんな感じの画面が出ればOKです。
+
+![デプロイ成功](vercel-deploy-complete.webp)
+
+## Contentfulの設定
+今回はヘッドレスCMSとしてContentfulを使用します。
+
+Contentfulの全体像は[こちら](https://dev.classmethod.jp/articles/contentful/)の記事が参考になります。
+<ExternalOgp url="https://dev.classmethod.jp/articles/contentful/"/>
+
+アカウントを作成するとBlankという名前のSpaceが作られているのでそれを使います。
+
+Space Nameは画面右上の[Settings]→[General settings]で変更できます。
+
+### Mediaの追加
+
+今回は画像を一覧で返してほしいだけなのでContent modelの定義はせずにMediaの追加のみ行います。
+
+ヘッダーのMediaタブからアセットを追加します。
+![メディアの追加画面](media.webp)
+
+
+### Tokenの取得
+
+Tokenは画面右上の[Settings]→[API Keys]から生成できます。
+
+![メディアの追加画面](setting.webp)
+
+Tokenが生成されたら以下のような画面が表示されるので、APIKeyをコピーしておきましょう。
+![トークン生成画面](token-page.webp)
+
+[Bruno](https://www.usebruno.com/)で実際に叩いてみると以下のようなレスポンスが返ってきます。
+![レスポンス例](bruno-response.webp)
+
+
+## NextからContentfulのAPIを叩く
+
+### queryを定義する
+
+Assetを一覧で取得するためのSchemaを定義します。
+```graphql title="src/queries/assets.graphql"
+query AssetCollection($limit: Int, $skip: Int) {
+  assetCollection(limit: $limit, skip: $skip) {
+    items {
+      title
+      url
+    }
+  }
+}
+```
+
+### GraphQL-CodegenでContentfulのSchemaから型を自動生成する
+
+上で定義したSchemaとContentfulのSchemaを利用して形を自動生成します。
+
+```shell
+pnpm add -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-apollo
+npx graphql-code-generator init
+```
+
+プロジェクトルートに `codegen.ts` が作られるので、以下に書き換えます。
+```ts title="codegen.ts"
+import type { CodegenConfig } from "@graphql-codegen/cli";
+
+const config: CodegenConfig = {
+  overwrite: true,
+  schema: {
+    [`https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`]:
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.CONTENTFUL_ACCESS_TOKEN}`,
+        },
+      },
+  },
+  documents: ["src/queries/*.graphql"],
+  generates: {
+    "src/generated/schema.tsx": {
+      plugins: [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo",
+      ],
+    },
+  },
+};
+
+export default config;
+```
+
+`npx graphql-code-generator init` を実行した時に、 `package.json` に `codegen` のスクリプトが追加されるので以下のように変更してください。
+
+(実行時に`.env`からContentfulのSpaceIdとTokenを取得するようにしています。)
+
+```json title="package.json" {8}#a 
+{
+    // 略
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build ",
+    "start": "next start",
+    "lint": "next lint",
+    "codegen": "graphql-codegen --require dotenv/config --config codegen.ts"
+  },
+}
+```
+
+実行すると`src/generated`配下に型定義ファイルが自動生成されます。
+
+```sh
+pnpm run codegen
+```
+
+### ApolloClientの追加
+
+```sh
+pnpm add @apollo/client
+```
+
+パッケージが追加できたら以下のファイルを追加します。 
+```ts title="src/lib/apolloClient.ts"
+import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+
+const TOKEN = process.env.CONTENTFUL_ACCESS_TOKEN;
+const SPACE = process.env.CONTENTFUL_SPACE_ID;
+const URL = `https://graphql.contentful.com/content/v1/spaces/${SPACE}`;
+
+const link = new HttpLink({
+  uri: URL,
+  headers: {
+    Authorization: `Bearer ${TOKEN}`,
+  },
+  fetchOptions: {
+    cache: "force-cache",
+  },
+});
+
+const cache = new InMemoryCache();
+
+export const apolloClient = new ApolloClient({
+  link,
+  cache,
+});
+
+```
+
+### page.tsxを修正
+
+定義したapolloClientを用いて画像を取得して表示するために、`page.tsx`を以下のように編集します。
+```tsx
+import { apolloClient } from "@/lib/apolloClient";
+import {
+  AssetCollectionDocument,
+  Query,
+  QueryAssetCollectionArgs,
+} from "@/generated/schema";
+
+export default async function Home() {
+  const res = await apolloClient.query<Query, QueryAssetCollectionArgs>({
+    query: AssetCollectionDocument,
+    variables: {
+      skip: 0,
+      limit: 20,
+    },
+  });
+
+  const items = res.data.assetCollection?.items ?? [];
+
+  return (
+    <main>
+      <div>
+        {items.map((item) => (
+          <div
+            style={{
+              display: "block",
+              position: "relative",
+              width: "500px",
+              height: "300px",
+            }}
+          >
+            <img src={item?.url ?? ""} />
+            // この時点ではnext/imageがSSGだと使えないので一旦imgタグで代用
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
+```
+
+ここまで来たら一度pushしてみます。
+Vercelの環境変数を設定しないとビルドが失敗するので、`.env`に定義している変数を忘れずに追加しましょう。
+
+## ContentfulにAssetが追加されたらビルドされるようにする
+ContentfulはEntryやAssetなどの追加や変更時にトリガーをセットして、Webhookを発火させることができます。
+
+それを利用して、今回はAssetの追加・更新時にVercelのWebhookを発火させるようにします。
+
+
+### VercelでWebhookのURLを生成する
+
+Vercelのプロジェクトの設定画面からWebhookのURLを生成し、コピーしておきます。
+![VercelのWebhookURL生成画面](webhook.webp)
+
+### ContentfulでWebhookの設定を追加する
+
+画面右上の[Setting]→[Webhooks]から設定を追加します。
+![ContentfulのWebhook設定画面](contentful-webhook.webp)
+
+この状態でMediaを追加してPublishするとVercel上でビルドが走るようになります。
+
+今回はVercel上でビルドを走らせましたが、Github ActionsでCDを回したい場合もContentful側の変更をトリガーにしてWebhook経由で実行できるみたいです。
+
+<ExternalOgp url="https://www.contentful.com/blog/running-static-site-builds-with-github-actions-and-contentful/"/>
+
+今回作成したサイトとGitHubのリポジトリはこちらです。
+
+<ExternalOgp url="https://lgtlatte-git-main-mr04vvs-projects.vercel.app/"/>
+<ExternalOgp url="https://github.com/mr04vv/lgtlatte"/>
+
+## おわりに
+
+ヘッドレスCMS初挑戦だったんですが、かなり便利でした。
+特にWebhook経由でコンテンツの更新時にSSGのビルドを自動で走らせることができるので、更新の手間が省けてとても楽になりました。
+
+Nextは`generateMetadata`がとても便利で、ContentfulからOgpの情報を取得してmetadataを生成するようできました。後からOgpを変更したくなってもコードをいじらなくて済むのは体験良きです。
+
+GraphQLもかなり久しぶりに触ったので知識があやふやでした。また時間をとって復習します。
+
+フロントエンダーのはずなのにフロントエンドの知識が浅くて恥ずかしくなってくるので、色々試しつつ基礎もしっかり勉強していかないとな〜となっているところです。
+
+ではまた次回お会いしましょう。
+
+![ぬいぐるみと並んでいるらてさん](latte3.webp)

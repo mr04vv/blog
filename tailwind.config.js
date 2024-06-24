@@ -1,3 +1,4 @@
+import plugin from "tailwindcss/plugin";
 /** @type {import('tailwindcss').Config} */
 const defaultTheme = require("tailwindcss/defaultTheme");
 export default {
@@ -9,6 +10,14 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".auto-phrase": {
+          "word-break": "auto-phrase",
+        },
+      });
+    }),
+  ],
   darkMode: "class",
 };

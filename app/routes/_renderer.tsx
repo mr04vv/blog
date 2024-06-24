@@ -65,7 +65,7 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
         <Header>
           <ThemeButton />
         </Header>
-        <main class={"max-w-[700px] w-screen px-6 mt-6"}>{children}</main>
+        <main class={"max-w-[780px] w-screen px-6 mt-6"}>{children}</main>
       </body>
     </html>
   );
