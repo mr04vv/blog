@@ -1,11 +1,11 @@
 ---
 title: Next.jsとContentfulで飼い猫のLGTM画像サイトを作成する
-date: 2024-06-23T00:25:11.375Z
+date: 2024-06-24T00:25:11.375Z
 description: 
 iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Cat/Flat/cat_flat.svg
 ---
 
-少し前にCloudflare PagesとHonoで愛猫「らて」のLGTM画像サイトを作成したのですが、画像のメンテナンスコストが高すぎたのでCMSへ移行することにしました。
+少し前にCloudflare PagesとHonoで愛猫「らて」のLGTM画像サイトを作成したのですが、画像のメンテナンスコストが高すぎたのでCMSへ移行しました。
 
 ヘッドレスCMSを試したことがなかったのと、Nextのアプリをちゃんと作ったことがなかったので、単純に試したかった気持ちもあります。
 <ExternalOgp url="https://sizu.me/mooriii/posts/fvx05tis26bs"/>
@@ -15,6 +15,9 @@ iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/
 構成は以下のような感じで、Contentfulへの画像アップロードをトリガーにして、VercelでのSSGビルドを走らせるようにしています。
 
 ![デプロイフロー図](contentful-next-architecture.webp)
+
+今回作成したサイトはこちらです。
+<ExternalOgp url="https://lgtlatte-git-main-mr04vvs-projects.vercel.app/"/>
 
 ## Nextアプリケーションの作成とVercelの連携
 
@@ -263,13 +266,16 @@ Vercelのプロジェクトの設定画面からWebhookのURLを生成し、コ�
 <ExternalOgp url="https://www.contentful.com/blog/running-static-site-builds-with-github-actions-and-contentful/"/>
 
 今回作成したサイトとGitHubのリポジトリはこちらです。
-<ExternalOgp url="https://github.com/mr04vv/lgtlatte"/>
+
+<ExternalOgp url="https://lgtlatte-git-main-mr04vvs-projects.vercel.app/"/>
 <ExternalOgp url="https://github.com/mr04vv/lgtlatte"/>
 
 ## おわりに
 
 ヘッドレスCMS初挑戦だったんですが、かなり便利でした。
 特にWebhook経由でコンテンツの更新時にSSGのビルドを自動で走らせることができるので、更新の手間が省けてとても楽になりました。
+
+Nextは`generateMetadata`がとても便利で、ContentfulからOgpの情報を取得してmetadataを生成するようできました。後からOgpを変更したくなってもコードをいじらなくて済むのは体験良きです。
 
 GraphQLもかなり久しぶりに触ったので知識があやふやでした。また時間をとって復習します。
 
