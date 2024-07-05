@@ -11,6 +11,9 @@
       "ja-no-successive-word": {
         "allow": ["↓"]
       },
+      "no-exclamation-question-mark": {
+        "allowFullWidthQuestion": true
+      },
       "ja-no-mixed-period": {
         "allowPeriodMarks": ["↓"]
       }
