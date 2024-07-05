@@ -61,6 +61,7 @@ const frontMatter = `---
 title: ${entryTitle}
 date: ${date.toISOString()}
 description: 
+iconUrl: 
 ---
 `;
 
