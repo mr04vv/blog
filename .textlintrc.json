@@ -16,7 +16,13 @@
       },
       "ja-no-mixed-period": {
         "allowPeriodMarks": ["↓"]
-      }
+      },
+      "ja-no-weak-phrase": false,
+      "no-doubled-joshi": {
+        "strict": false,
+        "allow": ["で", "や"]
+      },
+      "sentence-length": false
     }
   }
 }

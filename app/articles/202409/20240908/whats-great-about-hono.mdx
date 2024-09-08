@@ -1,0 +1,85 @@
+---
+title: Honoはどうやってマルチランタイムを実現したのか？
+date: 2024-09-08T05:07:31.665Z
+description: Honoって何がいいの？と聞かれたので整理してみました
+iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Fire/Flat/fire_flat.svg
+---
+
+最近本業でもHonoを使うようになり、ランタイム関係なく動かせることに感動しています。
+そこで、どういった経緯でHonoがマルチランタイムに対応することとなったのか気になったので軽く調査してみました。
+
+## Honoとは？
+Honoとは様々な環境で動く、超軽量&超高速なウェブフレームワークで、以下の特徴を持ちます。
+
+- ランタイムに依存しない
+- 高速かつ軽量
+- 充実したエコシステム（MiddlewareやAdaptorが豊富）
+- RPCによる型安全な開発
+
+Web標準のAPIを利用することでゼロ依存を実現し、エッジランタイムでも高速に動作するように設計されています。
+
+<ExternalOgp url="https://github.com/yusukebe/hono"/>
+
+## どうやってマルチランタイムを実現したのか？
+
+### 元々はCloudflare Workers向けのフレームワークとして作られた
+今でこそDenoやBunなどいろいろな環境で動くフレームワークとして注目を集めていますが、元々はCloudflare Workersに特化したものとして作られていたそうです。
+
+> 動機は単純で、Cloudflare Workersで動くアプリケーションを開発するためのフレームワークが世の中にあまりないと思ったこと。それから、ルータ1を自作してみたかったことも理由の1つですね。
+> -- <cite>[「Honoはあくまでオープンソースプロダクト」開発者でコントリビューターの私が会社員になった理由](https://findy-code.io/engineer-lab/yusukebe)</cite>
+<ExternalOgp url="https://findy-code.io/engineer-lab/yusukebe"/>
+
+
+### CDNエッジ＆サーバーレスという制約
+Cloudflare Workersはサーバーレス環境ということで、高速に起動することが求められます。
+CDNのエッジで動かすということもあり、スクリプトサイズの制限がかなり厳しめです（1MB）。
+さらに、（一部を除き）Node.js依存のモジュールが動かないという制約があります。
+
+そのため（？）HonoではWeb標準APIのみを利用することで依存をゼロにし、軽量でかつNode.jsに依存しないことによる高速な起動を実現しています。
+
+
+> スクリプトのサイズが1MB以内、使えるAPIが極端に限られているなど制約がありますが、それはそれで単一機能のシンプルなアプリケーションを作る気にさせてくれます。
+>
+> -- 略 --
+>
+> もちろん外部モジュールを使うことが出来ますが、node.js依存のモジュールは動きません。というかモジュール、だいぶ動きません。そこで、上記のみのAPIを使って、依存ゼロの軽いフレームワークがあったらいいなと作りました。
+> -- <cite>[Hono[炎]っていうイケてる名前のフレームワークを作っている](https://zenn.dev/yusukebe/articles/0c7fed0949e6f7)</cite>
+
+<ExternalOgp url="https://zenn.dev/yusukebe/articles/0c7fed0949e6f7"/>
+
+### なぜCloudflare WorkersではNode.jsが使えない？
+最近はDenoやBunなどの様々なランタイムが登場しているものの、jsのランタイムといえばまだまだNode.jsが想起されるかと思います。
+
+エッジ環境で言うとAWS LambdaではNode.jsが動くのに、なぜCloudflare Workersでは動かないのでしょう？
+
+その問いに対しては、[公式ブログ](https://blog.cloudflare.com/ja-jp/introducing-cloudflare-workers/) にて以下のように答えています。
+
+> Nodeをベースにした場合、V8のサンドボックスの利点を失うことになります。代わりにプロセスレベル（別名コンテナベース）のサンドボックスを使用しなければなりませんが、これは前述のように安全性と効率性に欠けます。-- <cite>[Cloudflare Workersのご紹介：エッジでJavaScript Service Workersを実行する](https://blog.cloudflare.com/ja-jp/introducing-cloudflare-workers/)</cite>
+
+<ExternalOgp url="https://blog.cloudflare.com/ja-jp/introducing-cloudflare-workers/"/>
+
+Node.jsはもともとサーバー上で長時間動作するプロセスを実行することを想定して設計されています。
+そのためファイルシステム（fs）、ネットワーク（net）、プロセス管理（process）など、ローカル環境やOSにアクセスする強力な機能があります。
+
+Cloudflare Workersのようなサーバーレスプラットフォームでは、軽量かつ短期間で分離されたコンテキストにおいてコードを実行することが求められているため、Node.jsのようなランタイムをそのまま使用すると、強力すぎるAPIがセキュリティリスクとなり、Cloudflareが目指す軽量で安全なサーバーレス環境を実現できなくなってしまうのです。
+
+さらにサーバーレスという特性上、Node.jsの場合スピンアップに時間がかかりコールドスタートに課題が残ります。
+一方Cloudflare WorkersはV8上で直接実行されるため、起動時間が高速になっているのです。
+
+
+結果的に依存を限りなく少なくすることによって、各ランタイムへの対応も比較的容易に可能になっています。
+実際、コードをほとんど変えずにFastlyでも動いていたそうです。
+<script defer class="speakerdeck-embed" data-id="833757bf69e847fe9b36b422e99ee41d" data-ratio="1.7777777777777777" src="//speakerdeck.com/assets/embed.js"></script>
+
+## おわりに
+
+今日は雑にHonoがどのようにマルチランタイムを実現したのかを整理してみました。
+その裏にはCloudflare Workersで動かすために作られたという背景が大きく影響していたようです。
+
+Cloudflare Workersで動かすために作ろうとしたら、依存ゼロにする必要があってマルチランタイムに対応できたのか、元々マルチランタイム対応をしようとしていたのかは分かりませんが、どこでも動くウェブフレームワークという素敵なコンセプトで作られたHonoは今後も応援していきたいと思っています。
+
+（最近はHonoでBFFを作っていてRPCの凄さに感動しています。）
+
+ではまた次回お会いしましょう。
+
+![ねずみのおもちゃに食らいつくらてさん](https://images.ctfassets.net/rd8mwctho8md/1KIzzXhajeXZrCnJ6KKpd0/25f6ee892f38681e85c499a74056aec3/DSC_0220.webp?w=540&h=540&q=80&fm=webp)
