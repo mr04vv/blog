@@ -5,11 +5,11 @@
 @tailwind utilities;
 
 html {
-  @apply text-slate-800 
+  @apply text-slate-800;
 }
 
 body {
-  @apply dark:text-gray-100
+  @apply dark:text-gray-100;
 }
 
 .markdown {
@@ -45,7 +45,7 @@ body {
 }
 
 .markdown blockquote > p{
-  @apply text-sm
+  @apply text-sm;
 }
 
 .markdown h1 {
@@ -121,7 +121,7 @@ body {
 }
 
 .source {
-  @apply text-right italic
+  @apply text-right italic;
 }
 
 
