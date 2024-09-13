@@ -1,0 +1,126 @@
+---
+title: Goのdeferを理解したい
+date: 2024-09-13T11:57:41.809Z
+description: テストを書いててDBのセットアップ周りでdeferが使われていて、そういえば何なんだ？って思ったのでまとめました。
+iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Goggles/Flat/goggles_flat.svg
+---
+
+## deferとは
+Goの `defer`とは、渡した関数の実行を、呼び出し元の関数が終わるまで遅らせるものです。
+
+```go showLineNumbers title="defer.go" /defer/#s
+func main() {
+	defer fmt.Println("２番目に実行")
+	fmt.Println("最初に実行")
+}
+```
+
+```text
+最初に実行
+２番目に実行
+```
+
+`defer` では実行は遅延されますが、即時評価されます。
+
+> `defer` へ渡した関数の引数は、すぐに評価されますが、その関数自体は呼び出し元の関数がreturnするまで実行されません。
+
+どういうことかと言うと、 以下の例のように、 `defer` で評価された後に変数の値を変化させても実行時には反映されません。
+
+```go showLineNumbers {2,4} title="defer.go" 
+func main() {
+	message := "２番目に実行"
+	defer fmt.Println(message)
+	message = "評価が終わってるのでprintされない"
+	fmt.Println("最初に実行")
+}
+
+```
+
+```text
+最初に実行
+２番目に実行
+```
+
+## deferの複数呼び出し
+
+`defer` を関数内で複数呼び出した場合はLIFO(last-in-first-out)の順で実行されます。(いわゆるスタック)
+
+```go showLineNumbers title="defer.go" /defer/#s
+func main() {
+	fmt.Println("hello")
+	for i := 0; i < 10; i++ {
+		defer fmt.Println(i)
+	}
+	fmt.Println("world")
+}
+```
+
+```text
+hello
+world
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+```
+
+## どういうときに使うのか
+よくあるのはクリーンアップ処理です。
+公式ではファイルシステムの処理を例に出しています。
+
+```go showLineNumbers
+func CopyFile(dstName, srcName string) (written int64, err error) {
+    src, err := os.Open(srcName)
+    if err != nil {
+        return
+    }
+    dst, err := os.Create(dstName)
+    if err != nil {
+        return
+    }
+    written, err = io.Copy(dst, src)
+    dst.Close()
+    src.Close()
+    return
+}
+```
+
+この例では、 `os.Open`や`os.Create`の処理が失敗した場合にソースファイルを閉じずに処理を終了してしまいます。
+
+一方deferを使えば、return後に必ず実行してくれるので早期リターンをする場合に考慮することが減ります。
+
+```go showLineNumbers /defer/#s
+func CopyFile(dstName, srcName string) (written int64, err error) {
+    src, err := os.Open(srcName)
+    if err != nil {
+        return
+    }
+    defer src.Close()
+    dst, err := os.Create(dstName)
+    if err != nil {
+        return
+    }
+    defer dst.Close()
+    return io.Copy(dst, src)
+}
+```
+
+個人的にはテストでDBのセットアップコードを書くときに、よくお世話になっています。
+
+## おわりに
+
+せっかく個人ブログ作ったのにアウトプットの質とレベルを気にしすぎて勝手に投稿ハードルを上げてしまっていたので、思い切ってシンプルな内容にしてみました。
+
+社会人として何年もエンジニアやってるはずなのに全然身についていないので、簡単な内容からどんどんアウトプットしていこうと思います。
+
+もうちょいzennのスクラップくらい事実の羅列にしたほうが書きやすいかもな〜。（でも書きたくなっちゃうんですよね感情を。）
+
+ではまた。
+
+![LGTM](https://images.ctfassets.net/rd8mwctho8md/6jHIzho90juyoh3Zk0ZFxD/c75cea77036183747b0d76e2e000f386/DSC_0218.webp?w=540&h=540&q=80&fm=webp)
