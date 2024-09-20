@@ -53,8 +53,8 @@
     "textlint-rule-ja-space-between-half-and-full-width": "2.4.2",
     "textlint-rule-preset-ja-spacing": "2.4.3",
     "textlint-rule-preset-ja-technical-writing": "10.0.1",
-    "vite": "5.4.6",
+    "vite": "5.4.7",
     "vite-plugin-static-copy": "1.0.6",
-    "wrangler": "3.78.6"
+    "wrangler": "3.78.7"
   }
 }
