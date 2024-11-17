@@ -74,7 +74,7 @@ export default defineConfig(({ mode }) => {
             overwrite: false,
           },
           {
-            src: ["./app/theme.js"],
+            src: ["./app/theme.ts"],
             dest: "static",
             rename: (
               _fileName: string,
