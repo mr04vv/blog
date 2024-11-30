@@ -58,10 +58,6 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
         <meta name="twitter:site" content="@mooriii" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={description} />
-        <meta
-          name="twitter:image"
-          content={`https://blog.mooriii.com${ogpPath}`}
-        />
         <title>{pageTitle}</title>
         <Script src="/app/client.ts" async />
         <Style />
