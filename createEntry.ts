@@ -41,14 +41,16 @@ const yyyyMMdd = date
   })
   .replaceAll("/", "");
 
-const { exitCode } = await $`ls ./app/articles/${yyyyMM}`.quiet();
+const { exitCode } = await $`ls ./app/articles/${yyyyMM}`.nothrow().quiet();
 
 // MEMO: 今日の日付のディレクトリを生成
 if (exitCode !== 0) {
   await $`mkdir ./app/articles/${yyyyMM}`;
   await $`mkdir ./app/articles/${yyyyMM}/${yyyyMMdd}`;
 } else {
-  const { exitCode } = await $`ls ./app/articles/${yyyyMM}/${yyyyMMdd}`.quiet();
+  const { exitCode } = await $`ls ./app/articles/${yyyyMM}/${yyyyMMdd}`
+    .nothrow()
+    .quiet();
   if (exitCode !== 0) {
     await $`mkdir ./app/articles/${yyyyMM}/${yyyyMMdd}`;
   }
