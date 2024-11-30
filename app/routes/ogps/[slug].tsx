@@ -156,5 +156,10 @@ async function loadGoogleFont({
   }
 
   const res = await fetch(fontUrl);
-  return res.arrayBuffer();
+  const buffer = await res.arrayBuffer();
+
+  if (buffer instanceof ArrayBuffer) {
+    return buffer;
+  }
+  return buffer.buffer.slice(0);
 }
