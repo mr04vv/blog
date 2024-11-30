@@ -23,7 +23,7 @@ export const fetchOgp = async (url: string) => {
 
     // biome-ignore lint/complexity/noForEach: <explanation>
     Array.from(metas).forEach((v) => {
-      const prop = v.getAttribute("property");
+      const prop = v.getAttribute("property") || v.getAttribute("name");
       if (!prop) return;
       const key = prop.replace("og:", "");
       if (key === "image:alt") ogp.imageAlt = v.getAttribute("content") || "";

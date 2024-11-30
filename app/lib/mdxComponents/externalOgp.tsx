@@ -44,13 +44,15 @@ export const ExternalOgp = async (props: Props) => {
             <span class="text-xs">{host}</span>
           </div>
         </div>
-        <div class="h-full">
-          <img
-            src={ogp.image}
-            class={"h-full w-fit rounded-r-lg max-w-[32vw] object-cover"}
-            alt={`ogp of ${ogp.image}`}
-          />
-        </div>
+        {ogp.image && (
+          <div class="h-full">
+            <img
+              src={ogp.image}
+              class={"h-full w-fit rounded-r-lg max-w-[32vw] object-cover"}
+              alt={`ogp of ${ogp.image}`}
+            />
+          </div>
+        )}
       </div>
     </a>
   );
