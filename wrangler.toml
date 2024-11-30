@@ -4,7 +4,7 @@ compatibility_flags = [ "nodejs_compat" ]
 pages_build_output_dir = "./dist"
 
 [env.preview]
-PROD = false
+VITE_PROD = false
 
 # [vars]
 # MY_VAR = "my-variable"
