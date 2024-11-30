@@ -26,10 +26,7 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={description} />
         <meta property="og:site_name" content={blogName} />
-        <meta
-          property="og:image"
-          content={`https://blog.mooriii.com${ogpPath}`}
-        />
+        <meta property="og:image" content={`${ogpPath}`} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@mooriii" />
         <meta name="twitter:title" content={pageTitle} />
