@@ -93,9 +93,9 @@ export default createRoute(
     );
 
     const body = new Resvg(svg).render().asPng();
-
+    const bodyArray = new Uint8Array(body);
     c.header("Content-Type", "image/png");
-    return c.body(body);
+    return c.body(bodyArray.buffer);
   },
 );
 
@@ -156,5 +156,12 @@ async function loadGoogleFont({
   }
 
   const res = await fetch(fontUrl);
-  return res.arrayBuffer();
+  const buffer = await res.arrayBuffer();
+
+  if (buffer instanceof ArrayBuffer) {
+    return buffer;
+  }
+  const arrayBuffer = new ArrayBuffer(buffer.byteLength);
+  const arrayView = new Uint8Array(arrayBuffer);
+  return arrayView.buffer.slice(0);
 }
