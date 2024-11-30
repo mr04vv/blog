@@ -1,0 +1,212 @@
+---
+title: リアルタイム共同編集を実現できるLoroを試してみる
+date: 2024-12-06T09:21:53.256Z
+description: CRDTというデータ構造を用いた共同編集機能を実現するライブラリの新たな選択肢Loroを試してみました
+iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Writing%20hand/Default/Flat/writing_hand_flat_default.svg
+---
+
+
+この記事は[Atrae Advent Calendar 2024](https://adventar.org/calendars/10486)の6日目の記事です。
+
+## Loroとは
+
+LoroはCRDT(Conflict-free Replicated Data Types)というデータ構造を活用したライブラリで、リアルタイムの共同編集やバージョン管理機能をアプリケーションに組み込むことができます。
+<ExternalOgp url="https://loro.dev/"/>
+
+簡単に言うと、複数人で同時にデータを操作しても競合を起こさないでいい感じにマージしてくれるライブラリです。
+複数人で操作をしているときにオフライン操作をしても、オンライン復帰時に他の人の操作も含めていい感じにマージしてくれます。
+
+同じような仕組みを使ったライブラリには、他にも [Yjs](https://github.com/yjs/yjs) や [Automerge](https://github.com/automerge/automerge) といったものがあります。
+
+タイムトラベル(履歴？スナップショット？)機能が簡単に実装できるのも特徴らしいです。
+<ExternalOgp url="https://loro.dev/docs/examples#time-travel"/>
+
+
+
+CRDTについては[CRDT (Conflict-free Replicated Data Type)を15分で説明してみる](https://qiita.com/everpeace/items/bb73ec64d3e682279d26)が参考になるのでぜひご覧ください。
+
+<ExternalOgp url="https://qiita.com/everpeace/items/bb73ec64d3e682279d26"/>
+
+## 使い方
+
+使い方は意外と簡単です。LoroDocと呼ばれるものを初期化して、好みのデータを追加したり削除したりしていきます。
+サポートしてるデータ形式は[公式ドキュメント](https://loro.dev/docs/tutorial/get_started#container)を参考にしてください。
+```ts showLineNumbers 
+const doc = new LoroDoc();
+const text: LoroText = doc.getText("text");
+text.insert(0, "Hello world!");
+console.log(doc.toJSON()); // { "text": "Hello world!" }
+```
+
+共同で編集する場合は複数のdocを同期させる必要がありますが、exportメソッドとimportメソッドが用意されているのでそれを使います。exportしてエンコードしたものを別のdocでimportして同期させるといった具合です。
+
+exportメソッドは、用途によって[異なるモードが用意](https://loro.dev/docs/tutorial/encoding)されています。
+
+以下は同時に同じmapを操作したときの例です。Loroのmapは最後に編集したものが反映されるLWW（Last Writer Wins）というポリシーを使用しています。また同時編集でコンフリクトが起きた際には、[Lamport timestamp](https://en.wikipedia.org/wiki/Lamport_timestamp)の順序決定アルゴリズムを使用して[競合を解消しているらしい](https://loro.dev/docs/tutorial/map)です。（僕には難しくてキャッチアップしきれてません）
+
+
+```ts showLineNumbers
+import { LoroDoc } from "loro-crdt";
+
+const docA = new LoroDoc();
+const docB = new LoroDoc();
+docA.setPeerId(0) // 同時に編集が起きた場合は、peerId の大きい方が優先される. 
+docB.setPeerId(1) // peerIdを反対にすると結果も反対になる.
+docA.getMap("map").set("key", "valueA");
+docB.getMap("map").set("key", "valueB");
+
+const bytesA = docA.export({mode: "update"})
+const bytesB = docB.export({mode: "update"})
+
+docB.import(bytesA)
+docA.import(bytesB)
+
+console.log(docA.toJSON()) // { map: { key: 'valueB' } }
+console.log(docB.toJSON()) // { map: { key: 'valueB' } }
+```
+
+## 実際にアプリケーションの組み込んでみる
+
+今回はホワイトボードライブラリの [tldraw](https://github.com/tldraw/tldraw) を使って、共同編集可能なホワイトボードを作ってみます。
+[サンプルコード](https://github.com/mr04vv/tldraw-loro/tree/main)を用意しましたのでぜひ参考にしてみてください。
+<ExternalOgp url="https://github.com/tldraw/tldraw"/>
+
+まずはLoroの差分を垂れ流すだけのWebsocketサーバーを作ります。
+
+```ts title="server.ts" showLineNumbers {33,38}
+import { Hono } from "hono";
+import { createNodeWebSocket } from "@hono/node-ws";
+import { serve } from "@hono/node-server";
+import { WebSocket } from "ws";
+
+const app = new Hono();
+
+const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({
+  app,
+});
+
+const port = 1234;
+const server = serve({ fetch: app.fetch, port });
+injectWebSocket(server);
+
+console.log(`Server is running on port ${port}`);
+
+// 接続してるクライアントを管理する配列
+const conns: WebSocket[] = [];
+app.get(
+  "/",
+  upgradeWebSocket(() => {
+    return {
+      onOpen: async (evt, ws) => {
+        if (!ws.raw) return;
+        if (!(ws.raw instanceof WebSocket)) return;
+        // すでに接続済みの場合はスキップ
+        if (!conns.includes(ws.raw)) conns.push(ws.raw);
+      },
+      onMessage: (message, ws) => {
+        if (!ws.raw) return;
+        if (!(ws.raw instanceof WebSocket)) return;
+        const update = message.data as ArrayBuffer;
+        ws.raw.binaryType = "arraybuffer";
+        for (const conn of conns) {
+          // 送信元以外に垂れ流し
+          if (conn === ws.raw) continue;
+          conn.send(update);
+        }
+      }
+    };
+  }),
+);
+
+```
+
+実態はほぼ33行目と38行目で、来たデータをそのまま他のクライアントに送り返してるだけです。
+
+続いてクライアントです。クライアントの全貌はGitHubに用意したのでそちらをご覧ください。
+<ExternalOgp url="https://github.com/mr04vv/tldraw-loro/tree/main/apps/client"/>
+
+まずは[受信部分](https://github.com/mr04vv/tldraw-loro/blob/664dcb660250ba245c6ab1de617782a1890363c4/apps/client/src/App.tsx#L153C1-L172C37)。
+
+ここではWebsocketサーバーから受け取った差分をクライアント側のdocにimportしています。7行目で受け取ったタイミングのバージョンを保持しておきます。そうすることで更新時に差分のみサーバーへ送信できるようになります。
+```tsx title="App.tsx" showLineNumbers {7} 
+  const handleWsMessage = useCallback(
+    async (ev: MessageEvent) => {
+      try {
+        const data = ev.data;
+        const arrayMessage = new Uint8Array(data);
+        doc.import(arrayMessage);
+        versionRef.current = doc.version();
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [doc],
+  );
+
+  useEffect(() => {
+    wsProvider.addEventListener("message", handleWsMessage);
+    return () => {
+      wsProvider.removeEventListener("message", handleWsMessage);
+    };
+  }, [handleWsMessage, wsProvider]);
+```
+
+続いて送信部分。
+少しtldrawの知識が必要になりますが、ここでは説明しません。詳しくは[公式ドキュメント](https://tldraw.dev/docs/persistence#Listening-for-changes)を参考にしてください。
+<ExternalOgp url="https://tldraw.dev/docs/persistence#Listening-for-changes"/>
+
+処理の流れとしては以下のような感じです。
+1. [tldrawの状態の変化を検知する](https://github.com/mr04vv/tldraw-loro/blob/664dcb660250ba245c6ab1de617782a1890363c4/apps/client/src/App.tsx#L135-L151)
+2. [変化した差分を使ってloroのmapを更新](https://github.com/mr04vv/tldraw-loro/blob/664dcb660250ba245c6ab1de617782a1890363c4/apps/client/src/App.tsx#L42-L61)
+3. [mapの更新を検知してwebsocketに差分を送信](https://github.com/mr04vv/tldraw-loro/blob/664dcb660250ba245c6ab1de617782a1890363c4/apps/client/src/App.tsx#L76-L86)
+4. [websocketから送られてきた差分をdocに適用](https://github.com/mr04vv/tldraw-loro/blob/254fa95689c469e5d64850b9d27095911675684f/apps/client/src/App.tsx#L131C1-L143C5)
+
+Loroのではsubscribeメソッドが用意されていて、イベントヘンドラをセットできます。
+イベントハンドラ内では、ローカルでの更新とリモートの更新（importメソッドを使用した更新）を区別できるので、以下のようにそれぞれ処理を分けることができます。
+
+```ts title="App.tsx" showLineNumbers {3,12,}
+  const handleMapUpdate = useCallback(
+    (e: LoroEventBatch) => {
+      if (e.by === "local") {
+        // ローカルでの更新
+        // websocketに差分を送信
+        websocket.send(update)
+      }
+      if (e.by === "import") {
+        // importメソッドによる更新 = websocket経由での更新
+        // tldrawに反映する処理
+        editor.store.mergeRemoteChanges(() => {
+          editor.store.put([...updateShapes]);
+          editor.store.remove([...deleteShapeIds]);
+        });
+      }
+    },
+    [doc, editor.store, wsProvider],
+  );
+
+  useEffect(() => {
+    doc.getMap("map").subscribe(handleMapUpdate);
+  }, [doc, handleMapUpdate]);
+```
+
+うまくいくとこんな感じでリアルタイムに同期されたホワイトボードができるはずです。
+
+![同時編集しているホワイトボードのGIF](loro.gif)
+
+また、ドキュメントには書いてないのですが、[Awareness](https://github.com/loro-dev/loro/blob/main/crates/loro-wasm/src/awareness.rs)の実装もあるのでちょっと工夫すればユーザーカーソルの同期のように永続化しなくても良い情報の同期もよしなにできるようになります。
+
+Websocketサーバーに一手間加えて永続化できるようにしてあげればリロードしても他のクライアントと同期できるようにもなります。
+
+![カーソルも同期されていて永続化されているデモ](loro2.gif)
+
+## まとめ
+
+今回はLoroを使ってリアルタイムに共同編集できるホワイトボードを作ってみました。Yjsと比較してもドキュメントがわかりやすく操作も直感的な気がします。
+
+履歴機能も割と簡単に作れちゃうのでぜひ皆さんも試してみてください。
+
+Cloudflareの[Durable Objects](https://developers.cloudflare.com/durable-objects/)と組み合わせて使えたらかなり面白そう。時間あるときに試してみようかな…？
+
+それではまた次回お会いしましょう。
+
+![LGTM](https://images.ctfassets.net/rd8mwctho8md/29Drv7oYGTwpmNLncELvts/b1e28d53b91cd4e706d15ed8a1275aae/DSC_0249.webp?w=540&h=540&q=80&fm=webp)
