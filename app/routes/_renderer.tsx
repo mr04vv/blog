@@ -36,7 +36,6 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
               content={`https://blog.mooriii.com${ogpPath}`}
             />
             <link rel="icon" href="https://blog.mooriii.com/favicon.ico" />
-            <script src="/static/theme.js" />
           </>
         ) : (
           <>
@@ -44,8 +43,12 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
             <meta property="og:image" content={ogpPath} />
             <meta name="twitter:image" content={ogpPath} />
             <link rel="icon" href="/favicon.ico" />
-            <script src="/app/theme.ts" />
           </>
+        )}
+        {import.meta.env.PROD ? (
+          <script src="/static/theme.js" />
+        ) : (
+          <script src="/app/theme.ts" />
         )}
         <meta property="og:type" content="article" />
         <meta property="og:title" content={pageTitle} />
