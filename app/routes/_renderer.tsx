@@ -11,6 +11,7 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
   const ogpPath = title ? `/ogps/${entryName}.png` : "/ogp.png";
   const c = useRequestContext();
   const pagePath = c.req.path;
+  console.log("pagePath", pagePath);
   const description =
     frontmatter?.description ?? "日常や技術に関して気まぐれに投稿する日記";
 
