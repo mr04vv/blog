@@ -195,6 +195,8 @@ Loroのではsubscribeメソッドが用意されていて、イベントヘン�
 
 また、ドキュメントには書いてないのですが、[Awareness](https://github.com/loro-dev/loro/blob/main/crates/loro-wasm/src/awareness.rs)の実装もあるのでちょっと工夫すればユーザーカーソルの同期のように永続化しなくても良い情報の同期もよしなにできるようになります。
 
+Awarenessについては[Yjsのドキュメント](https://docs.yjs.dev/api/about-awareness)を読んだほうが分かりやすいかもしれません。概念はおそらくほぼ同じです。
+
 Websocketサーバーに一手間加えて永続化できるようにしてあげればリロードしても他のクライアントと同期できるようにもなります。
 
 ![カーソルも同期されていて永続化されているデモ](loro2.gif)
