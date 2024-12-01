@@ -65,8 +65,10 @@ export default createRoute(
             href={`https://twitter.com/intent/tweet?url=https://blog.mooriii.com/entry/${
               post?.entryName
             }&text=${post?.frontmatter.title}${" - "}mooriii's blog`}
+            target={"_blank"}
             referrerpolicy="no-referrer"
             class={"flex hover:opacity-70 transition-opacity"}
+            rel="noreferrer"
           >
             <XIcon size={26} />
           </a>
