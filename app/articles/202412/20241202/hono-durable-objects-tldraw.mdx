@@ -10,7 +10,9 @@ iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/
 今日は[Hono](https://hono.dev/)と[Cloudflare Durable Objects](https://www.cloudflare.com/ja-jp/developer-platform/products/durable-objects/)を使ってリアルタイムで共同編集できるオンラインホワイトボードを作ってみようと思います。
 
 ホワイトボードは[tldraw](https://tldraw.dev/)を使い、共同編集機能の実現には[Loro](https://loro.dev/)を使用します。
-Loroについては後日別の記事を公開予定なのでそちらをお待ち下さい。
+Loroについては[「リアルタイム共同編集を実現できるライブラリLoroを試してみる」](https://blog.mooriii.com/entry/real-time-edit-loro)で紹介してますのでぜひご覧ください。
+
+<ExternalOgp url="https://blog.mooriii.com/entry/real-time-edit-loro"/>
 
 今回作成したものはGitHubにリポジトリを用意したのでぜひ参考にしてみてください。
 <ExternalOgp url="https://github.com/mr04vv/loro-tldraw-durable-objects/tree/main"/>
@@ -19,7 +21,7 @@ Loroについては後日別の記事を公開予定なのでそちらをお待�
 
 ## ローカルにシンプルなWebsocketサーバーを立てる
 
-まずは送ったものをオウム返しするWebsocketサーバーを立てます。
+送ったものをオウム返しするWebsocketサーバーを立ててみます。
 
 はじめにCloudflare Workersのプロジェクトを作成します。
 ```sh
