@@ -1,0 +1,285 @@
+---
+title: Hono×DurableObjectsでオンラインホワイトボードを作る
+date: 2024-12-02T02:51:51.846Z
+description: Durable Objectsを使ってWebsocket経由で共同編集できるホワイトボードを作ってみました。
+iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/White%20large%20square/Flat/white_large_square_flat.svg
+---
+
+[Honoアドベントカレンダー](https://qiita.com/advent-calendar/2024/hono)9日目の記事です。
+
+今日は[Hono](https://hono.dev/)と[Cloudflare Durable Objects](https://www.cloudflare.com/ja-jp/developer-platform/products/durable-objects/)を使ってリアルタイムで共同編集できるオンラインホワイトボードを作ってみようと思います。
+
+ホワイトボードは[tldraw](https://tldraw.dev/)を使い、共同編集機能の実現には[Loro](https://loro.dev/)を使用します。
+Loroについては後日別の記事を公開予定なのでそちらをお待ち下さい。
+
+今回作成したものはGitHubにリポジトリを用意したのでぜひ参考にしてみてください。
+<ExternalOgp url="https://github.com/mr04vv/loro-tldraw-durable-objects/tree/main"/>
+
+（ちなみに記事のアイコンはホワイトボードをイメージしました）
+
+## ローカルにシンプルなWebsocketサーバーを立てる
+
+まずは送ったものをオウム返しするWebsocketサーバーを立てます。
+
+はじめにCloudflare Workersのプロジェクトを作成します。
+```sh
+npm install -g wrangler
+wrangler login
+wrangler init -y server
+cd server
+```
+
+`hono` をinstallします。
+
+```sh
+npm i hono
+```
+
+[ドキュメント](https://developers.cloudflare.com/workers/examples/websockets/#write-a-websocket-server)を参考に`src/index.ts` を以下に書きかえます。
+
+```ts title="src/index.ts" showLineNumbers
+import { Hono } from "hono";
+
+const app = new Hono();
+
+app.get("/ws", async (c) => {
+  const upgradeHeader = c.req.header("Upgrade");
+  if (!upgradeHeader || upgradeHeader !== "websocket") {
+    return new Response("Expected Upgrade: websocket", { status: 426 });
+  }
+
+  const webSocketPair = new WebSocketPair();
+  const [client, server] = Object.values(webSocketPair);
+
+  server.accept();
+  server.addEventListener("message", (event) => {
+    server.send(event.data);
+  });
+
+  return new Response(null, {
+    status: 101,
+    webSocket: client,
+  });
+});
+
+export default app;
+```
+
+ここまでで一度devサーバーを立ち上げてwscatコマンドでアクセスしてみましょう。
+
+```sh
+npm run dev
+```
+
+```sh
+❯ wscat -c ws://localhost:8787
+Connected (press CTRL+C to quit)
+> こんにちは
+< こんにちは
+```
+
+オウム返しされましたね。
+
+## 他のクライアントにブロードキャストする
+
+このままでは自分が送ったメッセージしか返ってこないので、他に接続しているクライアントにもメッセージを返せるようにしてみましょう。
+
+Cloudflare Workersはリクエストごとに独立した実行環境を提供します。ゆえに接続情報を[グローバル変数で管理できません](https://zenn.dev/moutend/articles/97c98a277f4bae?utm_source=chatgpt.com#%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%90%E3%83%AB%E5%A4%89%E6%95%B0)。(厳密には正しく管理できる保証はありません。)
+
+```ts showLineNumbers
+const servers: WebSocket[] = [] // 接続情報を管理するグローバル変数
+app.get("/ws", async (c) => {
+  // 中略
+  const webSocketPair = new WebSocketPair();
+  const [client, server] = Object.values(webSocketPair);
+  // ↓こういうことができない
+  servers.push(server);
+  server.addEventListener("message", (event) => {
+    for (const _server of servers) {
+      if (_server !== server) {
+        // 送信元以外にブロードキャスト
+        client
+        _server.send(event.data);
+      }
+    }
+  });
+})
+```
+
+これはDurable Objectsを使うと対処できます。
+
+<ExternalOgp url="https://developers.cloudflare.com/durable-objects/"/>
+
+Durable Objectsはエッジで動くWorkers上の状態を管理するオブジェクトで、IDが同じであれば同一のオブジェクトにアクセスできます。チャットアプリなどでルームIDに対応したオブジェクトを作成できるので、ルーム内の状態を一元管理できます。
+
+ということでDurable Objectsを作っていきます。
+
+まずは `wrangler.toml` に以下を追記します。(`Doc`となっているところは任意の名前でOKです。)
+
+```toml title="wrangler.toml"
+[durable_objects]
+bindings = [{name = "DOC", class_name = "Doc"}]
+
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["Doc"]
+```
+
+続いてDocクラスを作ります。
+
+```ts title="doc.ts" showLineNumbers
+import { DurableObject } from "cloudflare:workers";
+
+export class Doc extends DurableObject {
+  // websocketの接続情報を管理
+  connections: Set<WebSocket>;
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    this.connections = new Set<WebSocket>();
+  }
+
+  async fetch() {
+    const webSocketPair = new WebSocketPair();
+    const [client, server] = Object.values(webSocketPair);
+
+    this.connections.add(server);
+
+    server.accept();
+    server.addEventListener("message", (event) => {
+      for (const conn of this.connections) {
+        // 送信元以外にブロードキャスト
+        if (conn === server) continue;
+        conn.send(event.data);
+      }
+    });
+    return new Response(null, { status: 101, webSocket: client });
+  }
+}
+```
+
+`index.ts` でDocを使うように手を加えます。この時エントリーポイントにDurable Objectsを直接書くか、exportする記述が無いとエラーになるので気をつけてください。
+
+20行目の `idFromName()` でroomIdごとに異なるDurableObjectsが生成され、部屋ごとに別々の状態を持つことができます。
+```ts title="src/index.ts" showLineNumbers {2, 20}
+import { Hono } from "hono";
+// エントリーポイントにDurableObjectsを直接書くか、exportしないとダメ
+export { Doc } from "./doc";
+
+type Env = {
+  Bindings: {
+    DOC: DurableObjectNamespace;
+  };
+};
+const app = new Hono<Env>();
+
+app.get("/ws/:roomId", async (c) => {
+  const upgradeHeader = c.req.header("Upgrade");
+  if (!upgradeHeader || upgradeHeader !== "websocket") {
+    return new Response("Expected Upgrade: websocket", { status: 426 });
+  }
+
+  const { roomId } = c.req.param();
+  // これでroomIdごとに異なるDurable Objectsが生成される
+  const id = c.env.DOC.idFromName(roomId);
+  const obj = c.env.DOC.get(id);
+
+  return obj.fetch(c.req.raw);
+});
+
+export default app;
+```
+
+ここまで来たら一度devサーバーで確認しましょう。
+
+こんな感じでパスごとに部屋を分けることができました。
+
+![websocketで部屋ごとにメッセージを送り分けている様子](ws.gif)
+
+
+## Loroを使って状態を管理する
+
+今回はホワイトボードの状態を管理するために[Loro](https://loro.dev)を使用します。
+
+```sh
+npm i loro-crdt
+```
+
+LoroDocをDurableObjectで管理して、新規接続時に保存された状態を返すように手を加えます。[サンプルコード](https://github.com/mr04vv/loro-tldraw-durable-objects/blob/main/apps/server/src/doc.ts)ではDurableObjectsの[Storage API](https://developers.cloudflare.com/durable-objects/api/storage-api/)を使って永続化しています。
+
+<ExternalOgp url="https://developers.cloudflare.com/durable-objects/api/storage-api/"/>
+
+```ts title="doc.ts" showLineNumbers {2, 11, 27, 35}
+import { DurableObject } from "cloudflare:workers";
+import { LoroDoc } from "loro-crdt";
+
+export class Doc extends DurableObject {
+  // websocketの接続情報を管理
+  connections: Set<WebSocket>;
+  doc: LoroDoc;
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    this.connections = new Set<WebSocket>();
+    this.doc = new LoroDoc();
+  }
+
+  async fetch() {
+    const webSocketPair = new WebSocketPair();
+    const [client, server] = Object.values(webSocketPair);
+
+    this.connections.add(server);
+
+    server.accept();
+    server.addEventListener("message", (event) => {
+      const message = event.data as ArrayBuffer;
+
+      const array = new Uint8Array(message);
+      for (const conn of this.connections) {
+        　const data = array.slice(1);
+        　this.doc.import(data);
+        　if (conn === server) continue;
+        　// 送信元以外にブロードキャスト
+        　conn.send(data);
+      }
+    });
+
+    // 保存された状態からsnapshotを取得
+    const snapshot = this.doc.export({ mode: "snapshot" });
+    server.send(snapshot);
+    return new Response(null, { status: 101, webSocket: client });
+  }
+}
+```
+
+クライアント側の処理は記述量が多いのでリポジトリを参考にしてください。
+<ExternalOgp url="https://github.com/mr04vv/loro-tldraw-durable-objects/tree/main/apps/client"/>
+
+大まかな処理の流れは以下の画像のような感じです。
+
+![ボード操作時の処理の流れ](do.webp)
+![新規クライアント接続時の処理の流れ](do2.webp)
+
+
+
+ということで完成したのが[こちら](client-e2z.pages.dev)。
+
+（一応パスパラメータで部屋を指定できます。）
+
+アクセス数によっては予告なしに止める可能性があるのでご了承ください。
+
+## まとめ
+
+今日はHonoとCloudflareのDurableObjectsを使って共同編集できるオンラインホワイトボードを作ってみました。
+
+デモアプリなんでクライアント側の操作にthrottleをかけてなかったりするのでDurableObjectへのアクセス量がとんでもないことになってしまう可能性があるので怖いです。
+
+Websocketでステートフルなアプリケーションが簡単に作れちゃうのでおすすめです。ぜひ触ってみてください。
+
+ではまた次回お会いしましょう。
+
+![LGTM](https://images.ctfassets.net/rd8mwctho8md/5oqZ7y6iwUqX6rFDVVrDjG/eb9964aa6b866b668561f0a51b127e17/DSC_0090.webp?w=540&h=540&q=80&fm=webp)
+
+## 宣伝
+
+我が家の猫のLGTM画像サイトです。ぜひご自由に使ってください。
+
+<ExternalOgp url="https://lgtlatte.mooriii.com/"/>
