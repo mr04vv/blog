@@ -260,7 +260,17 @@ export class Doc extends DurableObject {
 ![ボード操作時の処理の流れ](do.webp)
 ![新規クライアント接続時の処理の流れ](do2.webp)
 
+毎フレームWebsocketと通信してると大変なことになるので、いい感じにthrottleする工夫が必要です。今回は[ahook](https://github.com/alibaba/hooks) の`useThrottoleFn`を使って、一定間隔で操作を間引きました。
 
+```ts title="App.tsx" showLineNumbers
+// updateの処理は高頻度で起こるので一定間隔で処理する
+const { run: throttledUpdate } = useThrottleFn(
+  (updated: Record<string, [from: TLRecord, to: TLRecord]>) => {
+    handleUpdatedObject(updated);
+  },
+  { wait: THROTTLE_INTERVAL },
+);
+```
 
 ということで完成したのが[こちら](client-e2z.pages.dev)。
 
@@ -271,8 +281,6 @@ export class Doc extends DurableObject {
 ## まとめ
 
 今日はHonoとCloudflareのDurableObjectsを使って共同編集できるオンラインホワイトボードを作ってみました。
-
-デモアプリなんでクライアント側の操作にthrottleをかけてなかったりするのでDurableObjectへのアクセス量がとんでもないことになってしまう可能性があるので怖いです。
 
 Websocketでステートフルなアプリケーションが簡単に作れちゃうのでおすすめです。ぜひ触ってみてください。
 
