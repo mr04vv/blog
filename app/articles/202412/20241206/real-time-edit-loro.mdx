@@ -8,7 +8,7 @@ iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/
 
 この記事は[Atrae Advent Calendar 2024](https://adventar.org/calendars/10486)の6日目の記事です。前回は[@motonosuke_dev](https://x.com/motonosuke_dev)による「[改善余地のあるコードから考える学びの重要性](https://note.com/motonosuke_dev/n/nf8928a0cab8d)」でした。
 
-今日はリアルタイム共同編集が実現できるライブラリのLoroを試してみようと思います。似たようなライブラリには、[Yjs](https://github.com/yjs/yjs)がありますが、筆者の個人的な意見としてはYjsよりドキュメントがわかりやすく、かつタイムトラベル機能が容易に実装できるのが魅力的です。
+今日はリアルタイム共同編集が実現できるライブラリのLoroを試してみようと思います。似たようなライブラリには、[Yjs](https://github.com/yjs/yjs)がありますが、筆者の個人的な感想としてはYjsよりドキュメントがわかりやすく、かつタイムトラベル機能が容易に実装できるのが魅力的です。
 
 <ExternalOgp url="https://loro.dev/docs/examples#time-travel"/>
 
@@ -18,7 +18,7 @@ LoroはCRDT(Conflict-free Replicated Data Types)というデータ構造を活�
 <ExternalOgp url="https://loro.dev/"/>
 
 簡単に言うと、複数人で同時にデータを操作しても競合を起こさないでいい感じにマージしてくれるライブラリです。
-複数人で操作をしているときにオフライン操作をしても、オンライン復帰時に他の人の操作も含めていい感じにマージしてくれます。
+同時編集中に接続が切れオフラインで操作をしても、オンライン復帰時に他の人の操作も含めていい感じにマージしてくれます。
 
 CRDTについては[CRDT (Conflict-free Replicated Data Type)を15分で説明してみる](https://qiita.com/everpeace/items/bb73ec64d3e682279d26)が参考になるのでぜひご覧ください。
 
@@ -27,7 +27,7 @@ CRDTについては[CRDT (Conflict-free Replicated Data Type)を15分で説明�
 ## 使い方
 
 使い方は意外と簡単です。LoroDocと呼ばれるものを初期化して、好みのデータを追加したり削除したりしていきます。
-サポートしてるデータ形式は[公式ドキュメント](https://loro.dev/docs/tutorial/get_started#container)を参考にしてください。
+サポートしてるデータ形式はList,Text,Mapなどです。詳しくは[公式ドキュメント](https://loro.dev/docs/tutorial/get_started#container)を参照してください。
 ```ts showLineNumbers 
 const doc = new LoroDoc();
 const text: LoroText = doc.getText("text");
@@ -35,11 +35,11 @@ text.insert(0, "Hello world!");
 console.log(doc.toJSON()); // { "text": "Hello world!" }
 ```
 
-共同で編集する場合は複数のdocを同期させる必要がありますが、exportメソッドとimportメソッドが用意されているのでそれを使います。exportしてエンコードしたものを別のdocでimportして同期させるといった具合です。
+共同で編集する場合は複数のLoroDocを同期させる必要がありますが、exportメソッドとimportメソッドが用意されているのでそれを使います。変更を共有したいLoroDocの内容をexportして、変更を取り込みたいLoroDocでimportするといった具合です。
 
-exportメソッドは、用途によって[異なるモードが用意](https://loro.dev/docs/tutorial/encoding)されています。
+exportメソッドは、用途に応じて[エンコードモード](https://loro.dev/docs/tutorial/encoding)を使い分けます。
 
-以下は同時に同じmapを操作したときの例です。Loroのmapは最後に編集したものが反映されるLWW（Last Writer Wins）というポリシーを使用しています。また同時編集でコンフリクトが起きた際には、[Lamport timestamp](https://en.wikipedia.org/wiki/Lamport_timestamp)の順序決定アルゴリズムを使用して[競合を解消しているらしい](https://loro.dev/docs/tutorial/map)です。（僕には難しくてキャッチアップしきれてません）
+以下は同時に同じmapを操作したときの例です。Loroのmapは最後に編集したものが反映されるLWW（Last Writer Wins）というポリシーを使用しています。また同時編集でコンフリクトが起きた際には、[Lamport timestamp](https://en.wikipedia.org/wiki/Lamport_timestamp)の順序決定アルゴリズムを使用して[競合を解消しているらしい](https://loro.dev/docs/tutorial/map)です。
 
 
 ```ts showLineNumbers
@@ -49,22 +49,26 @@ const docA = new LoroDoc();
 const docB = new LoroDoc();
 docA.setPeerId(0) // 同時に編集が起きた場合は、peerId の大きい方が優先される. 
 docB.setPeerId(1) // peerIdを反対にすると結果も反対になる.
-docA.getMap("map").set("key", "valueA");
-docB.getMap("map").set("key", "valueB");
+docA.getMap("map").set("key1", "valueA");
+docA.getMap("map").set("key2", "valueA"); 
+docB.getMap("map").set("key1", "valueB"); 
 
 const bytesA = docA.export({mode: "update"})
 const bytesB = docB.export({mode: "update"})
 
+console.log(docA.toJSON()) // { map: { key1: 'valueA', key2: 'valueA' } }
+console.log(docB.toJSON()) // { map: { key1: 'valueB' } }
+
 docB.import(bytesA)
 docA.import(bytesB)
 
-console.log(docA.toJSON()) // { map: { key: 'valueB' } }
-console.log(docB.toJSON()) // { map: { key: 'valueB' } }
+console.log(docA.toJSON()) // { map: { key1: 'valueB', key2: 'valueA' } }
+console.log(docB.toJSON()) // { map: { key1: 'valueB', key2: 'valueA' } }
 ```
 
 ## 実際にアプリケーションの組み込んでみる
 
-今回はホワイトボードライブラリの [tldraw](https://github.com/tldraw/tldraw) を使って、共同編集可能なホワイトボードを作ってみます。今回はサーバーでは状態を持たず、ひたすら差分を垂れ流すだけにして、各クライアントがLoroのDocを管理する形にしてみます。
+今回はホワイトボードライブラリの [tldraw](https://github.com/tldraw/tldraw) を使って、共同編集可能なホワイトボードを作ってみます。今回はサーバーでは状態を持たず、ひたすら差分を垂れ流すだけにして、各クライアントがLoroDocを管理する形にしてみます。
 
 サンプルを用意しましたのでぜひ参考にしてみてください。
 <ExternalOgp url="https://github.com/mr04vv/tldraw-loro/tree/main"/>
@@ -115,7 +119,6 @@ app.get(
     };
   }),
 );
-
 ```
 
 実態はほぼ33行目と38行目で、来たデータをそのまま他のクライアントに送り返してるだけです。
@@ -207,7 +210,7 @@ Websocketサーバーに一手間加えて永続化できるようにしてあ�
 
 履歴機能も割と簡単に作れちゃうのでぜひ皆さんも試してみてください。
 
-Cloudflareの[Durable Objects](https://developers.cloudflare.com/durable-objects/)と組み合わせて使えたらかなり面白そう。後日Honoのアドベントカレンダーでチャレンジしようと思います。
+Cloudflareの[Durable Objects](https://developers.cloudflare.com/durable-objects/)と組み合わせて使えたらかなり面白そうということで、後日Honoのアドベントカレンダーでチャレンジしようと思います。
 
 それではまた次回お会いしましょう。
 
