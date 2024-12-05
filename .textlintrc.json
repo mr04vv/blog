@@ -4,7 +4,13 @@
       "extensions": [".mdx"]
     }
   },
-  "filters": {},
+  "filters": {
+    "allowlist": {
+      "allow": [
+        "Androidアプリエンジニアからフルスタックエンジニアになった話 a.k.a"
+      ]
+    }
+  },
   "rules": {
     "preset-ja-spacing": true,
     "preset-ja-technical-writing": {
@@ -12,7 +18,8 @@
         "allow": ["↓"]
       },
       "no-exclamation-question-mark": {
-        "allowFullWidthQuestion": true
+        "allowFullWidthQuestion": true,
+        "allowFullWidthExclamation": true
       },
       "ja-no-mixed-period": {
         "allowPeriodMarks": ["↓"]

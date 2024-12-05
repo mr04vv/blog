@@ -6,7 +6,7 @@ import { getPosts } from "../lib/posts";
 export default createRoute((c) => {
   const posts = getPosts();
   return c.render(
-    <div class={"mt-6 flex flex-col gap-12"}>
+    <div class={"mt-6 mb-12 flex flex-col gap-12"}>
       {posts.map((post) => (
         <Fragment key={post.entryName}>
           <ArticleListItem
