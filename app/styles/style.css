@@ -20,6 +20,10 @@ body {
   @apply mt-2 mb-2;
 }
 
+.markdown hr {
+  @apply mt-8 mb-8;
+}
+
 .markdown time {
   @apply mt-0 mb-2;
 }

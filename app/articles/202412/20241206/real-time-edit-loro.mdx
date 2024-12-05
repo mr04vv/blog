@@ -6,7 +6,11 @@ iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/
 ---
 
 
-この記事は[Atrae Advent Calendar 2024](https://adventar.org/calendars/10486)の6日目の記事です。
+この記事は[Atrae Advent Calendar 2024](https://adventar.org/calendars/10486)の6日目の記事です。前回は[@motonosuke_dev](https://x.com/motonosuke_dev)による「[改善余地のあるコードから考える学びの重要性](https://note.com/motonosuke_dev/n/nf8928a0cab8d)」でした。
+
+今日はリアルタイム共同編集が実現できるライブラリのLoroを試してみようと思います。似たようなライブラリには、[Yjs](https://github.com/yjs/yjs)がありますが、筆者の個人的な意見としてはYjsよりドキュメントがわかりやすく、かつタイムトラベル機能が容易に実装できるのが魅力的です。
+
+<ExternalOgp url="https://loro.dev/docs/examples#time-travel"/>
 
 ## Loroとは
 
@@ -15,13 +19,6 @@ LoroはCRDT(Conflict-free Replicated Data Types)というデータ構造を活�
 
 簡単に言うと、複数人で同時にデータを操作しても競合を起こさないでいい感じにマージしてくれるライブラリです。
 複数人で操作をしているときにオフライン操作をしても、オンライン復帰時に他の人の操作も含めていい感じにマージしてくれます。
-
-同じような仕組みを使ったライブラリには、他にも [Yjs](https://github.com/yjs/yjs) や [Automerge](https://github.com/automerge/automerge) といったものがあります。
-
-タイムトラベル(履歴？スナップショット？)機能が簡単に実装できるのも特徴らしいです。
-<ExternalOgp url="https://loro.dev/docs/examples#time-travel"/>
-
-
 
 CRDTについては[CRDT (Conflict-free Replicated Data Type)を15分で説明してみる](https://qiita.com/everpeace/items/bb73ec64d3e682279d26)が参考になるのでぜひご覧ください。
 
@@ -221,3 +218,7 @@ Cloudflareの[Durable Objects](https://developers.cloudflare.com/durable-objects
 我が家の猫のLGTM画像サイトです。ぜひご自由に使ってください。
 
 <ExternalOgp url="https://lgtlatte.mooriii.com/"/>
+
+---
+
+次回の7日目は [@muttsu_623](https://x.com/muttsu_623)による「Androidアプリエンジニアからフルスタックエンジニアになった話 a.k.a. バックエンドの学び方【後編】」です。
