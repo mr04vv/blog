@@ -73,6 +73,8 @@ console.log(docB.toJSON()) // { map: { key1: 'valueB', key2: 'valueA' } }
 サンプルを用意しましたのでぜひ参考にしてみてください。
 <ExternalOgp url="https://github.com/mr04vv/tldraw-loro/tree/main"/>
 
+### 受け取ったメッセージを他のクライアントに送信するWebsocketサーバーを作る
+
 まずはメッセージを垂れ流すだけのWebsocketサーバーを作ります。
 
 ```ts title="server.ts" showLineNumbers {33,38}
@@ -123,65 +125,65 @@ app.get(
 
 実態はほぼ33行目と38行目で、来たデータをそのまま他のクライアントに送り返してるだけです。
 
+### tldrawを使ったクライアントアプリを作る
+
 続いてクライアントです。
 <ExternalOgp url="https://github.com/mr04vv/tldraw-loro/tree/main/apps/client"/>
 
-まずは[受信部分](https://github.com/mr04vv/tldraw-loro/blob/664dcb660250ba245c6ab1de617782a1890363c4/apps/client/src/App.tsx#L153C1-L172C37)。
+クライアントの処理の流れは大体以下のような感じです。
+1. tldrawの状態の変化を検知し、LoroDocを更新
+2. LoroDocの更新を検知してWebsocketに変更差分を送信
+3. (Websocketが他のクライアントに差分を垂れ流す)
+4. Websocketから送られてきた差分をLoroDocに適用
+5. LoroDocの更新を検知してtldrawに反映
 
-ここではWebsocketサーバーから受け取った差分をクライアント側のdocにimportしています。7行目で受け取ったタイミングのバージョンを保持しておきます。そうすることで更新時に前のバージョンからの差分のみサーバーへ送信できるようになります。
-```tsx title="App.tsx" showLineNumbers {7} 
-  const handleWsMessage = useCallback(
-    async (ev: MessageEvent) => {
-      try {
-        const data = ev.data;
-        const arrayMessage = new Uint8Array(data);
-        doc.import(arrayMessage);
-        versionRef.current = doc.version();
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [doc],
-  );
 
+#### 1. tldrawの状態の変化を検知し、LoroDocを更新
+
+tldrawのボード上にオブジェクトが追加されたり、更新・削除された場合、tldrawのstoreのイベントハンドラで変更を検知できます。イベントハンドラ内で、取得した変更を元にローカルのLoroDocを更新します。
+
+```ts showLineNumbers
+  const editor = useEditor(); // tldrawが提供するhook
+  const doc = new LoroDoc();
+  // 中略
   useEffect(() => {
-    wsProvider.addEventListener("message", handleWsMessage);
-    return () => {
-      wsProvider.removeEventListener("message", handleWsMessage);
-    };
-  }, [handleWsMessage, wsProvider]);
+    // ホワイトボードの変更を検知
+    const listen = editor.store.listen((e) => {
+      const { changes, source } = e;
+      if (source !== "user") return; // ローカルでの変更のみを処理
+      const { added, removed, updated } = changes;
+      
+      for (const shape of added) {
+          // LoroDocの更新
+          doc.getMap("map").set(shape.id, shape)
+      }
+    });
+    
+    return listen;
+  }, []);
 ```
 
-続いて送信部分。
-少しtldrawの知識が必要になりますが、ここでは説明しません。詳しくは[公式ドキュメント](https://tldraw.dev/docs/persistence#Listening-for-changes)を参考にしてください。
-<ExternalOgp url="https://tldraw.dev/docs/persistence#Listening-for-changes"/>
 
-処理の流れとしては以下のような感じです。
-1. [tldrawの状態の変化を検知](https://github.com/mr04vv/tldraw-loro/blob/664dcb660250ba245c6ab1de617782a1890363c4/apps/client/src/App.tsx#L135-L151)
-2. [変化した差分を使ってloroのmapを更新](https://github.com/mr04vv/tldraw-loro/blob/664dcb660250ba245c6ab1de617782a1890363c4/apps/client/src/App.tsx#L42-L61)
-3. [mapの更新を検知してwebsocketに差分を送信](https://github.com/mr04vv/tldraw-loro/blob/664dcb660250ba245c6ab1de617782a1890363c4/apps/client/src/App.tsx#L76-L86)
-4. [websocketから送られてきた差分をdocに適用](https://github.com/mr04vv/tldraw-loro/blob/254fa95689c469e5d64850b9d27095911675684f/apps/client/src/App.tsx#L131C1-L143C5)
+#### 2. LoroDocの更新を検知してWebsocketに変更差分を送信
 
-Loroではsubscribeメソッドが用意されていて、Docの変更をトリガーとしたイベントハンドラをセットできます。
-イベントハンドラ内では、ローカルでの更新（map.set("hoge")等の直接の更新）とリモートの更新（importメソッドを使用した更新）を区別できるので、以下のようにそれぞれ処理を分けることができます。
+ステップ１の13行目でのLoroDocの更新によって、Mapのイベントハンドラが発火します。Mapのイベントハンドラ内では、ローカルの変更をWebsocketサーバーに送信する処理を追加します。
 
-ローカルでの更新時に、差分をWebsocketサーバーに送り、リモートでの更新時にtldrawへ状態を反映する処理を行います。
+versionRefはステップ４で説明します。
 
-```ts title="App.tsx" showLineNumbers {3,12,}
+```ts showLineNumbers
+  const doc = new LoroDoc();
+  const versionRef = useRef(); // 前回との差分のみを送信するために保持するref
+  // 中略
   const handleMapUpdate = useCallback(
     (e: LoroEventBatch) => {
       if (e.by === "local") {
         // ローカルでの更新
         // websocketに差分を送信
-        websocket.send(update)
-      }
-      if (e.by === "import") {
-        // importメソッドによる更新 = websocket経由での更新
-        // tldrawに反映する処理
-        editor.store.mergeRemoteChanges(() => {
-          editor.store.put([...updateShapes]);
-          editor.store.remove([...deleteShapeIds]);
+        const updated = doc.export({
+          mode: "update",
+          from: versionRef.current,
         });
+        websocket.send(update)
       }
     },
     [doc, editor.store, wsProvider],
@@ -191,6 +193,77 @@ Loroではsubscribeメソッドが用意されていて、Docの変更をトリ�
     doc.getMap("map").subscribe(handleMapUpdate);
   }, [doc, handleMapUpdate]);
 ```
+
+#### 3. (Websocketが他のクライアントに差分を垂れ流す)
+
+#### 4. Websocketから送られてきた差分をLoroDocに適用
+
+ステップ２で変更差分が送信元以外のクライアントに送信されます。差分を受け取ったクライアントは、LoroDocに適用します。
+
+この時LoroDocを更新したタイミングのバージョンをrefで保持しておきます。そうすることで、状態更新時に前のバージョンとの差分のみを取り出して送信できます。
+
+```ts showLineNumbers
+  const doc = new LoroDoc();
+  const ws = new Websocket();
+  const versionRef = useRef();
+  // 中略
+  const handleWsMessage = useCallback(
+    async (ev: MessageEvent) => {
+      const data = ev.data;
+      const arrayMessage = new Uint8Array(data);
+      doc.import(arrayMessage); // LoroDocに適用
+      versionRef.current = doc.version(); // バージョンをrefに保持
+    },
+    [doc],
+  );
+
+  useEffect(() => {
+    ws.addEventListener("message", handleWsMessage);
+    return () => {
+      ws.removeEventListener("message", handleWsMessage);
+    };
+  }, [handleWsMessage, wsProvider]);
+```
+
+#### 5. LoroDocの更新を検知してtldrawに反映
+
+
+Loroではsubscribeメソッドが用意されていて、Docの変更をトリガーとしたイベントハンドラをセットできます。
+イベントハンドラ内では、ローカルでの更新（map.set("hoge")等の直接の更新）とリモートの更新（importメソッドを使用した更新）を区別できるので、以下のようにそれぞれ処理を分けることができます。
+
+自分の操作（→Websocketに送信）と他のクライアントから送信されたもの（→tldrawに反映）を区別するために、先程のMapのイベントハンドラに条件分岐を追加します。
+
+```ts showLineNumbers
+  const doc = new LoroDoc();
+
+  const handleMapUpdate = useCallback(
+    (e: LoroEventBatch) => {
+      if (e.by === "local") {
+        // doc.getMap("map").set()による変更
+      }
+      if (e.by === "import") {
+        // doc.importによる変更
+        const updateShapes: TLRecord[] = [];
+        const events = e.events;
+        for (const event of events) {
+          if (event.diff.type === "map") {
+            const map = event.diff.updated;
+            for (const key in map) {
+              const shape = map[key] as unknown as TLShape;
+                updateShapes.push(shape);
+            }
+          }
+        }
+        // tldrawにLoroDocの変更を反映
+        editor.store.mergeRemoteChanges(() => {
+          editor.store.put([...updateShapes]);
+        });
+      }
+    },
+    [doc, editor.store],
+  );
+```
+
 
 うまくいくとこんな感じでリアルタイムに同期されたホワイトボードができるはずです。
 
