@@ -161,11 +161,5 @@ async function loadGoogleFont({
 
   const res = await fetch(fontUrl);
   const buffer = await res.arrayBuffer();
-
-  if (buffer instanceof ArrayBuffer) {
-    return buffer;
-  }
-  const arrayBuffer = new ArrayBuffer(buffer.byteLength);
-  const arrayView = new Uint8Array(arrayBuffer);
-  return arrayView.buffer.slice(0);
+  return buffer;
 }
