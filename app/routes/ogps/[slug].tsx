@@ -4,6 +4,7 @@ import { Parser } from "budoux/dist/parser";
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
 import satori from "satori";
+import { blogName } from "../../constants";
 import { getPostByEntryName, getPosts } from "../../lib/posts";
 
 const parser = new Parser(jaModel);
@@ -27,10 +28,9 @@ export default createRoute(
 
     const titleLen = post?.frontmatter.title.length ?? 0;
 
-    const isBlame =
+    const isBlamePost =
       post?.frontmatter.title === "過去は他責で考え未来は自責で考える";
-
-    const splitedTitle = isBlame
+    const splitedTitle = isBlamePost
       ? ["過去は他責で考え", "未来は自責で考える"]
       : parser.parse(post?.frontmatter.title ?? "");
 
@@ -69,7 +69,7 @@ export default createRoute(
                 tw="rounded-full mr-4 w-18 h-18"
                 src="https://avatars.githubusercontent.com/u/24749358?v=4&s=100"
               />
-              mori
+              {blogName}
             </div>
             <h1
               style={{
@@ -77,7 +77,7 @@ export default createRoute(
                 fontFamily: "Noto Sans JP",
               }}
             >
-              Atrae Advent Calendar #組織づくりの実践知
+              blog.mooriii.com
             </h1>
           </div>
         </div>
