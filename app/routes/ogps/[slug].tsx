@@ -29,9 +29,9 @@ export default createRoute(
     const titleLen = post?.frontmatter.title.length ?? 0;
 
     const isBlamePost =
-      post?.frontmatter.title === "他責は過去に、自責は未来に";
+      post?.frontmatter.title === "過去は他責で考え未来は自責で考える";
     const splitedTitle = isBlamePost
-      ? ["他責は過去に", "自責は未来に"]
+      ? ["過去は他責で考え", "未来は自責で考える"]
       : parser.parse(post?.frontmatter.title ?? "");
 
     const notoSansBold = await loadGoogleFont({
