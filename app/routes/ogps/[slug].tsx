@@ -4,7 +4,6 @@ import { Parser } from "budoux/dist/parser";
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
 import satori from "satori";
-import { blogName } from "../../constants";
 import { getPostByEntryName, getPosts } from "../../lib/posts";
 
 const parser = new Parser(jaModel);
@@ -28,10 +27,11 @@ export default createRoute(
 
     const titleLen = post?.frontmatter.title.length ?? 0;
 
-    const isBlamePost =
-      post?.frontmatter.title === "他責は過去に、自責は未来に";
-    const splitedTitle = isBlamePost
-      ? ["他責は過去に", "自責は未来に"]
+    const isBlame =
+      post?.frontmatter.title === "過去は他責で考え未来は自責で考える";
+
+    const splitedTitle = isBlame
+      ? ["過去は他責で考え", "未来は自責で考える"]
       : parser.parse(post?.frontmatter.title ?? "");
 
     const notoSansBold = await loadGoogleFont({
@@ -69,7 +69,7 @@ export default createRoute(
                 tw="rounded-full mr-4 w-18 h-18"
                 src="https://avatars.githubusercontent.com/u/24749358?v=4&s=100"
               />
-              {blogName}
+              mori
             </div>
             <h1
               style={{
@@ -77,7 +77,7 @@ export default createRoute(
                 fontFamily: "Noto Sans JP",
               }}
             >
-              blog.mooriii.com
+              Atrae Advent Calendar #組織づくりの実践知
             </h1>
           </div>
         </div>
