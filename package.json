@@ -56,6 +56,6 @@
     "textlint-rule-preset-ja-technical-writing": "10.0.1",
     "vite": "6.0.3",
     "vite-plugin-static-copy": "2.2.0",
-    "wrangler": "3.95.0"
+    "wrangler": "3.96.0"
   }
 }
