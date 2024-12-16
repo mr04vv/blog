@@ -118,6 +118,8 @@ export default defineConfig(({ mode }) => {
         "feed",
         "budoux",
         "jsdom",
+        "lodash",
+        "motion",
       ],
     },
     server: {
