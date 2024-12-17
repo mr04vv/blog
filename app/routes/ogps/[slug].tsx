@@ -39,6 +39,16 @@ export default createRoute(
       weight: 600,
     });
 
+    const getTextSize = () => {
+      if (titleLen > 35) {
+        return 3.65;
+      }
+      if (titleLen > 20) {
+        return 4;
+      }
+      return 4.8;
+    };
+
     const svg = await satori(
       <div tw={"bg-[#FFCB67] w-full h-full flex p-9"}>
         <div
@@ -50,7 +60,7 @@ export default createRoute(
             <div
               tw={`flex justify-center  text-[${
                 // 要調整
-                titleLen > 20 ? 4 : 4.8
+                getTextSize()
               }rem] flex-wrap`}
             >
               {splitedTitle.map((s) => (
