@@ -1,0 +1,83 @@
+---
+title: カーソルをリアルタイム同期するときの工夫
+date: 2024-12-18T00:08:16.081Z
+description: 
+iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Backhand%20index%20pointing%20up/Default/Flat/backhand_index_pointing_up_flat_default.svg
+---
+
+この記事は[Atrae Advent Calendar 2024](https://adventar.org/calendars/10486)の18日目の記事です。前回は[@aki90935433](https://x.com/aki90935433)による「[生成AIアプリ開発ツールDifyをAWS EKSに導入してみた](https://zenn.dev/aki366/articles/0eb696bedf277c)」でした。
+
+---
+
+MiroやFigmaのようなオンラインホワイトボードツールでは他のユーザーのカーソルがリアルタイムに表示される機能が必須となっていますが、Websocketなどの技術を用いて高精度でリアルタイムな表示を実現しようとすると、パフォーマンスの懸念が出てきます。
+
+一方、パフォーマンスを気にしすぎるとユーザー体験に影響が出てしまうことがあります。
+
+今回はカーソルにフォーカスして、ユーザー体験をできるだけ損なわずにパフォーマンスを向上する工夫について書いていきます。
+
+詳細はliveblocksの記事がとても参考になるのでぜひご覧ください。デモもあるのでわかりやすいです。
+<ExternalOgp url="https://liveblocks.io/blog/how-to-animate-multiplayer-cursors"/>
+
+## Throttleで処理を間引く
+
+カーソルのデータを同期する際`mousemove`イベントを利用しますが、マウスを動かしている間は当然高頻度でイベントが発火するので、すべてのデータをサーバーに送信すると、サーバー・クライアントともに負荷が高くなります。
+
+![Throttleで間引く前のカーソルの同期ではイベント発火ごとに処理が走るのでコンソールに表示すると高頻度でログが吐かれる](before.gif)
+
+ちょっと見にくいですがGifに映っているコンソールを見てみるとかなりの頻度でログが吐かれています。
+
+ChromeのPerformanceタブでCPUの負荷を計測してもかなり負荷がかかっていることがわかります。（画像）
+
+![Throttleの処理を入れる前のCPUの負荷が高いプロファイルの画像](before-perform.webp)
+（画像はカーソル以外の処理も含めたときのプロファイルです）
+
+高頻度の処理によって負荷が上がっているので、頻度を落とすためにThrottle（同じ処理が連続する際に、一定間隔で間引く手法）を活用します。
+
+<ExternalOgp url="https://zenn.dev/tyyy/articles/debounce-throttle#throttle"/>
+
+`mousemove` イベントの処理をThrottleを使って間引くことで、負荷を下げることができます。
+
+![Throttleで間引いたカーソルの様子](after.gif)
+
+こちらもGifに映っているコンソールを見てみるとログを吐く頻度が全然違います。
+
+Performanceタブで負荷を計測してみてもCPUへの負荷がかなり減少していることがわかります。（画像）
+
+![Throttleの処理を入れた後のCPUの負荷が比較的下がっているプロファイルの画像](after-perform.webp)
+
+(デモで作ったアプリではahooksの[useThrottleFn](https://ahooks.js.org/hooks/use-throttle-fn/)を使っています)
+
+
+## カーソルにアニメーションをつける
+
+Throttleを入れることで負荷を下げることはできましたが、動画を見るとわかるようにカクカクになります。
+
+そうなるとパフォーマンスは向上したもののユーザー体験が損なわれてしまいます。
+
+そこでカーソルにアニメーションを付けることでカクつきを軽減します。
+
+ということでデモを用意してみました。
+
+デモではアニメーションのON/OFFやThrottleのインターバルを調整できるようにしたので、切り替えながら体感してみてください。
+
+<CursorDemo/>
+
+アニメーションを付けるだけでカクつきが大幅に軽減されていることがわかります。
+
+## おわりに
+
+今回はオンラインホワイトボードで他のユーザーのカーソルを表示する際の工夫について書いてみました。
+
+リアルタイム性とパフォーマンスの両方が求められるので、こういった工夫がとても大事になってきます。
+
+リアルタイム編集可能なホワイトボードということで、普段のフロントエンドより一層パフォーマンスに気をつけなければならないので今後も面白い技術があったら書いていこうと思います。
+
+![LGTM](https://images.ctfassets.net/rd8mwctho8md/3pcWg0h4rN5IRr9HBeJD3B/0b7dc36e82b2f90c6d554ed28dee638b/1000006429.webp?w=540&h=540&q=80&fm=webp)
+
+
+## 宣伝
+
+我が家の猫のLGTM画像サイトです。ぜひご自由に使ってください。
+
+<ExternalOgp url="https://lgtlatte.mooriii.com/"/>
+
