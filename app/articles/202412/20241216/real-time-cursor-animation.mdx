@@ -5,7 +5,7 @@ description:
 iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Backhand%20index%20pointing%20up/Default/Flat/backhand_index_pointing_up_flat_default.svg
 ---
 
-この記事は[Atrae Advent Calendar 2024](https://adventar.org/calendars/10486)の18日目の記事です。前回は[@aki90935433](https://x.com/aki90935433)による「[hogehoge]()」でした。
+この記事は[Atrae Advent Calendar 2024](https://adventar.org/calendars/10486)の18日目の記事です。前回は[@aki90935433](https://x.com/aki90935433)による「[生成AIアプリ開発ツールDifyをAWS EKSに導入してみた](https://zenn.dev/aki366/articles/0eb696bedf277c)」でした。
 
 ---
 
@@ -14,6 +14,9 @@ MiroやFigmaのようなオンラインホワイトボードツールでは他�
 一方、パフォーマンスを気にしすぎるとユーザー体験に影響が出てしまうことがあります。
 
 今回はカーソルにフォーカスして、ユーザー体験をできるだけ損なわずにパフォーマンスを向上する工夫について書いていきます。
+
+詳細はliveblocksの記事がとても参考になるのでぜひご覧ください。デモもあるのでわかりやすいです。
+<ExternalOgp url="https://liveblocks.io/blog/how-to-animate-multiplayer-cursors"/>
 
 ## Throttleで処理を間引く
 
@@ -53,13 +56,13 @@ Throttleを入れることで負荷を下げることはできましたが、動
 
 そこでカーソルにアニメーションを付けることでカクつきを軽減します。
 
-今回は [`motion`](https://motion.dev/docs/quick-start)を使ったデモを用意したのでアニメーションのON/OFFを切り替えながら体感してみてください。(スマホだと多分動かないです)
+ということでデモを用意してみました。
 
-デモでは140msでThrottleしています。
+デモではアニメーションのON/OFFやThrottleのインターバルを調整できるようにしたので、切り替えながら体感してみてください。
 
 <CursorDemo/>
 
-こんな感じでアニメーションを付けると、負荷を下げつつ滑らかなカーソル同期が実現できます。
+アニメーションを付けるだけでカクつきが大幅に軽減されていることがわかります。
 
 ## おわりに
 
@@ -67,14 +70,9 @@ Throttleを入れることで負荷を下げることはできましたが、動
 
 リアルタイム性とパフォーマンスの両方が求められるので、こういった工夫がとても大事になってきます。
 
-普段のフロントエンドより、一層パフォーマンスに気をつけなければならないので今後も面白い技術があったら書いていこうと思います。
+リアルタイム編集可能なホワイトボードということで、普段のフロントエンドより一層パフォーマンスに気をつけなければならないので今後も面白い技術があったら書いていこうと思います。
 
 ![LGTM](https://images.ctfassets.net/rd8mwctho8md/3pcWg0h4rN5IRr9HBeJD3B/0b7dc36e82b2f90c6d554ed28dee638b/1000006429.webp?w=540&h=540&q=80&fm=webp)
-
-## 参考
-
-liveblocksの記事がとても参考になるのでぜひご覧ください。デモもあるのでわかりやすいです。
-<ExternalOgp url="https://liveblocks.io/blog/how-to-animate-multiplayer-cursors"/>
 
 
 ## 宣伝
@@ -83,6 +81,3 @@ liveblocksの記事がとても参考になるのでぜひご覧ください。�
 
 <ExternalOgp url="https://lgtlatte.mooriii.com/"/>
 
----
-
-次回の18日目は@maruchanの「[]()」です。

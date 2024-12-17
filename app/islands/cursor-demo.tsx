@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "hono/jsx";
+import { useEffect, useMemo, useRef, useState } from "hono/jsx";
+import debounce from "lodash/debounce";
 import throttle from "lodash/throttle";
 import { animate } from "motion";
 
@@ -8,32 +9,59 @@ export const CursorDemo = () => {
     x: 0,
     y: 0,
   });
+  const [throttleInterval, setThrottleInterval] = useState(140);
+  const [debouncedThrottleInterval, setDebouncedThrottleInterval] =
+    useState(140);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     ref.current?.addEventListener("mousemove", handleMouseMove);
-  }, []);
+    return () => {
+      ref.current?.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [debouncedThrottleInterval]);
 
   const handleMouseMove = throttle(
     (e: MouseEvent) => {
       setPosition({ x: e.offsetX - 2, y: e.offsetY - 5 });
     },
-    140,
+    debouncedThrottleInterval,
     {
       leading: false,
       trailing: true,
     },
   );
 
+  const debouncedChangeInterval = (val: number) => {
+    setDebouncedThrottleInterval(val);
+  };
+
+  const memoized = useMemo(() => debounce(debouncedChangeInterval, 300), []);
+
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const handleChangeRange = (e: any) => {
+    const val = e.target.value;
+    setThrottleInterval(val);
+    memoized(val);
+  };
+
   return (
-    <div class={"w-full h-72 flex flex-col gap-2"}>
-      <div class={"flex h-full"}>
+    <div
+      class={
+        "w-full h-96 flex flex-col gap-2 border border-gray-300 dark:border-gray-700 rounded-md p-2"
+      }
+    >
+      <div class={"flex h-full gap-2"}>
         <div
           ref={ref}
-          class={"rounded-sm border border-gray-400 w-full h-full"}
-        />
+          class={
+            "rounded-md bg-[#fff2de] dark:bg-[#2a2a35] w-full h-full justify-center flex items-center select-none"
+          }
+        >
+          ここでカーソルを動かしてみてください
+        </div>
         <div
           class={
-            "rounded-sm border border-gray-400 w-full h-full relative overflow-hidden"
+            "rounded-md bg-[#fff2de] dark:bg-[#2a2a35] w-full h-full relative overflow-hidden"
           }
         >
           <Cursor x={position.x} y={position.y} isAnimate={isAnimate} />
@@ -47,6 +75,10 @@ export const CursorDemo = () => {
           onChange={() => setIsAnimate((prev) => !prev)}
         />
         <label for="animation-checkbox">アニメーション</label>
+      </div>
+      <div class={"flex flex-col gap-2"}>
+        <label for="range">Throttle interval: {throttleInterval}</label>
+        <input min={0} max={300} onChange={handleChangeRange} type={"range"} />
       </div>
     </div>
   );
