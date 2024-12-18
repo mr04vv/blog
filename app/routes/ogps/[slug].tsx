@@ -41,7 +41,7 @@ export default createRoute(
 
     const getTextSize = () => {
       if (titleLen > 35) {
-        return 3.65;
+        return 3.8;
       }
       if (titleLen > 20) {
         return 4;
