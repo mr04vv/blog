@@ -27,7 +27,7 @@
     "budoux": "0.6.4",
     "framer-motion": "12.4.7",
     "hono": "4.7.2",
-    "honox": "0.1.34",
+    "honox": "0.1.35",
     "jsdom": "26.0.0",
     "lodash": "4.17.21",
     "motion": "12.4.7",
@@ -44,7 +44,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "4.20250214.0",
     "@hono/vite-cloudflare-pages": "0.4.2",
-    "@hono/vite-dev-server": "0.18.1",
+    "@hono/vite-dev-server": "0.18.2",
     "@textlint/textlint-plugin-markdown": "14.4.2",
     "@types/bun": "1.2.3",
     "@types/jsdom": "21.1.7",
