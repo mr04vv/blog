@@ -25,12 +25,12 @@
     "@mdx-js/rollup": "3.1.0",
     "@resvg/resvg-js": "2.6.2",
     "budoux": "0.6.4",
-    "framer-motion": "12.4.9",
+    "framer-motion": "12.4.10",
     "hono": "4.7.2",
     "honox": "0.1.38",
     "jsdom": "26.0.0",
     "lodash": "4.17.21",
-    "motion": "12.4.9",
+    "motion": "12.4.10",
     "rehype-highlight": "7.0.2",
     "rehype-pretty-code": "0.14.0",
     "rehype-stringify": "10.0.1",
@@ -42,7 +42,7 @@
     "satori": "0.12.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20250224.0",
+    "@cloudflare/workers-types": "4.20250303.0",
     "@hono/vite-cloudflare-pages": "0.4.2",
     "@hono/vite-dev-server": "0.19.0",
     "@textlint/textlint-plugin-markdown": "14.4.2",
