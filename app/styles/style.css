@@ -121,7 +121,7 @@ body {
 
 /* Override pygments style background color. */
 .markdown .highlight pre {
-  @apply bg-gray-100 !important;
+  @apply !bg-gray-100;
 }
 
 .source {
