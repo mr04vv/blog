@@ -33,7 +33,7 @@ jobs:
       - uses: ./.github/actions/setup_bun
 
       - name: Run biome lint
-        run: bun run lint
+        run: bun run check
 
   typecheck:
     name: Type Check

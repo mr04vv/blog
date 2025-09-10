@@ -14,6 +14,7 @@ import {
   getPostByEntryName,
   getPosts,
 } from "../../lib/posts";
+
 const parser = new Parser(jaModel);
 
 export default createRoute(

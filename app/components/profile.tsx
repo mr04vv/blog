@@ -1,6 +1,7 @@
 import image from "../assets/avatar.webp?url";
 import { Avatar } from "./avatar";
 import { GithubIcon, HomeIcon, NoteIcon, SizuMeIcon, XIcon } from "./icons";
+
 const ICON_SIZE = 24;
 export const Profile = () => {
   return (
