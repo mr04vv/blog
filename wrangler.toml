@@ -1,9 +1,10 @@
 name = "blog"
 compatibility_date = "2024-04-01"
+compatibility_flags = [ "nodejs_compat" ]
 pages_build_output_dir = "./dist"
 
-# [vars]
-# MY_VAR = "my-variable"
+[vars]
+PACKAGE_MANAGER=bun
 
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
