@@ -6,7 +6,7 @@ runs:
     - name: Setup bun environment
       uses: oven-sh/setup-bun@v1
       with:
-        bun-version: 1.0.31
+        bun-version: 1.2.2
 
     - name: Cache bun packages
       uses: actions/cache@v4
