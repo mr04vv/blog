@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@reference "tailwindcss/utilities";
+
 pre {
   @apply !px-0 rounded-lg;
 }
