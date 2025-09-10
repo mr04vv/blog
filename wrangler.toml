@@ -4,7 +4,7 @@ compatibility_flags = [ "nodejs_compat" ]
 pages_build_output_dir = "./dist"
 
 [vars]
-BUN_VERSION = "1.2.2"
+PNPM_VERSION = "10.10.0"
 NODE_VERSION = "22.15.0"
 
 # [[kv_namespaces]]

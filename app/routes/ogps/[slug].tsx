@@ -1,6 +1,5 @@
 import { Resvg } from "@resvg/resvg-js";
-import { model as jaModel } from "budoux/dist/data/models/ja";
-import { Parser } from "budoux/dist/parser";
+import { jaModel, Parser } from "budoux";
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
 import satori from "satori";
@@ -26,13 +25,13 @@ export default createRoute(
 
     const post = getPostByEntryName(slug);
 
-    const titleLen = post?.frontmatter.title.length ?? 0;
+    const titleLen = post?.frontmatter?.title?.length ?? 0;
 
     const isBlamePost =
-      post?.frontmatter.title === "過去は他責で考え未来は自責で考える";
+      post?.frontmatter?.title === "過去は他責で考え未来は自責で考える";
     const splitedTitle = isBlamePost
       ? ["過去は他責で考え", "未来は自責で考える"]
-      : parser.parse(post?.frontmatter.title ?? "");
+      : parser.parse(post?.frontmatter?.title ?? "");
 
     const notoSansBold = await loadGoogleFont({
       family: "Noto Sans JP",
