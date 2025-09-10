@@ -22,6 +22,7 @@
     "@hono/vite-ssg": "0.1.1",
     "@mdx-js/rollup": "3.1.0",
     "@resvg/resvg-js": "2.6.2",
+    "@tailwindcss/postcss": "4.1.13",
     "budoux": "0.6.4",
     "framer-motion": "12.4.11",
     "hono": "4.7.4",
