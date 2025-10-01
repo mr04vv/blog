@@ -18,7 +18,7 @@
   "private": true,
   "dependencies": {
     "@biomejs/biome": "2.2.4",
-    "@tailwindcss/postcss": "4.1.13",
+    "@tailwindcss/postcss": "4.1.14",
     "@hono/react-renderer": "1.0.1",
     "@hono/vite-ssg": "0.2.0",
     "@mdx-js/rollup": "3.1.1",
@@ -52,14 +52,14 @@
     "autoprefixer": "10.4.21",
     "postcss": "8.5.6",
     "prompts": "2.4.2",
-    "tailwindcss": "4.1.13",
+    "tailwindcss": "4.1.14",
     "textlint": "15.2.2",
     "textlint-filter-rule-allowlist": "4.0.0",
     "textlint-rule-ja-space-between-half-and-full-width": "2.4.2",
     "textlint-rule-preset-ja-spacing": "2.4.3",
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "vite": "7.1.7",
-    "vite-plugin-static-copy": "3.1.2",
+    "vite-plugin-static-copy": "3.1.3",
     "wrangler": "4.40.3"
   }
 }
