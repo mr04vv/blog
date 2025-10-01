@@ -41,7 +41,7 @@
     "satori": "0.18.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20250927.0",
+    "@cloudflare/workers-types": "4.20251001.0",
     "@hono/vite-cloudflare-pages": "0.4.2",
     "@hono/vite-dev-server": "0.21.1",
     "@textlint/textlint-plugin-markdown": "15.2.2",
