@@ -17,7 +17,7 @@
   },
   "private": true,
   "dependencies": {
-    "@biomejs/biome": "2.2.4",
+    "@biomejs/biome": "2.2.5",
     "@tailwindcss/postcss": "4.1.14",
     "@hono/react-renderer": "1.0.1",
     "@hono/vite-ssg": "0.2.0",
@@ -26,7 +26,7 @@
     "budoux": "0.7.0",
     "framer-motion": "12.23.22",
     "hono": "4.9.9",
-    "honox": "0.1.47",
+    "honox": "0.1.49",
     "jsdom": "27.0.0",
     "lodash": "4.17.21",
     "motion": "12.23.22",
