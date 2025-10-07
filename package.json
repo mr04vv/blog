@@ -20,7 +20,7 @@
     "@biomejs/biome": "2.2.5",
     "@tailwindcss/postcss": "4.1.14",
     "@hono/react-renderer": "1.0.1",
-    "@hono/vite-ssg": "0.2.0",
+    "@hono/vite-ssg": "0.2.1",
     "@mdx-js/rollup": "3.1.1",
     "@resvg/resvg-js": "2.6.2",
     "budoux": "0.7.0",
