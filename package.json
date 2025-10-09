@@ -43,7 +43,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "4.20251008.0",
     "@hono/vite-cloudflare-pages": "0.4.2",
-    "@hono/vite-dev-server": "0.22.0",
+    "@hono/vite-dev-server": "0.23.0",
     "@textlint/textlint-plugin-markdown": "15.2.2",
     "@types/bun": "1.2.23",
     "@types/jsdom": "27.0.0",
