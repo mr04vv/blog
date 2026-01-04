@@ -92,9 +92,7 @@ code,
 figure {
   @apply overflow-x-auto;
 }
-p {
-  @apply text-xl;
-}
+
 article p {
   @apply leading-9;
 }
