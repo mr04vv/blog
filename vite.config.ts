@@ -108,6 +108,9 @@ export default defineConfig(({ mode }) => {
       },
     },
 
+    resolve: {
+      builtins: [/^node:/],
+    },
     ssr: {
       target: "node",
       external: [
