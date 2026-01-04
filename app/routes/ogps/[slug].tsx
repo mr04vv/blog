@@ -18,7 +18,7 @@ export default createRoute(
   }),
   async (c) => {
     const slug = c.req.param("slug");
-    if (slug === ":slug") {
+    if (!slug || slug === ":slug") {
       c.status(404);
       return c.text("Not Found");
     }
