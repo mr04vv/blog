@@ -24,12 +24,12 @@
     "@mdx-js/rollup": "3.1.1",
     "@resvg/resvg-js": "2.6.2",
     "budoux": "0.7.0",
-    "framer-motion": "12.24.8",
+    "framer-motion": "12.24.10",
     "hono": "4.11.3",
     "honox": "0.1.53",
     "jsdom": "27.4.0",
     "lodash": "4.17.21",
-    "motion": "12.24.8",
+    "motion": "12.24.10",
     "rehype-highlight": "7.0.2",
     "rehype-pretty-code": "0.14.1",
     "rehype-stringify": "10.0.1",
@@ -41,7 +41,7 @@
     "satori": "0.18.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20260103.0",
+    "@cloudflare/workers-types": "4.20260107.1",
     "@hono/vite-cloudflare-pages": "0.4.3",
     "@hono/vite-dev-server": "0.24.0",
     "@textlint/textlint-plugin-markdown": "15.5.0",
@@ -60,6 +60,6 @@
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "vite": "7.3.1",
     "vite-plugin-static-copy": "3.1.4",
-    "wrangler": "4.54.0"
+    "wrangler": "4.57.0"
   }
 }
