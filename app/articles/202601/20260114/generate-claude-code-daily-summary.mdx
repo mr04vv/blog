@@ -1,0 +1,139 @@
+---
+title: Claude Codeとの対話ログから１日のサマリを生成させて振り返りに活かす
+date: 2026-01-14T09:39:11.729Z
+description: Claude Codeとの対話履歴をObsidianに保存させて、保存された履歴からサマリを生成して振り返りに活かせるようにしました。
+iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Memo/Flat/memo_flat.svg
+---
+
+
+## はじめに
+『Claude Codeとの会話を自動でObsidianに記録する仕組みを作った』という記事を参考に会話ログをObsidianに記録する仕組みを作ったので、会話ログから１日のサマリーを生成して振り返りをしやすくしました。
+<ExternalOgp url="https://zenn.dev/pepabo/articles/ffb79b5279f6ee" />
+
+## 仕組み
+
+[Zennの記事](https://zenn.dev/pepabo/articles/ffb79b5279f6ee)の対話ログをObsidianに保存する仕組みを利用し、Skillを使ってサマリを生成してもらうようにしています。
+
+```md
+---
+name: cc-daily-summary
+description: claude codeのチャットログから技術的なトピックや特筆すべき事項を抽出して１日のサマリーを生成する。
+---
+
+# Claude Code　Daily Summary Generator
+
+今日のClaude codeのチャットログから技術的なトピックや特筆すべき事項を抽出して１日のサマリーを生成するスキルです。
+
+## 実行フロー
+
+### 1. 今日のセッションの取得
+`{対象のディレクトリ}` のディレクトリから今日の日付(yyyy-MM-dd)のものが存在するかチェックする
+存在しなければ終了する
+
+### 2. セッションの内容の分析
+今日の日付のセッションが存在する場合全てのmdファイルを取得して内容から以下を抽出する
+- 重要な技術トピックやキーワード
+- 悩んだことやトークテーマ
+- 疑問点やその解説
+
+その際、ただの作業ディスカッションはサマリーからは除いて最後のセクションに作業したことを追加する
+
+### 3. サマリーの生成
+２で取得した内容をもとに要約を作成
+
+### 4. サマリーの保存
+今日のセッションディレクトリに `summary.md` を生成して生成したサマリーを保存する
+```
+
+## 出力結果
+
+「〜の振り返りをしたい」というとスキルが起動してサマリ生成をしてくれます。
+
+![](cc-daily-summary.webp)
+
+生成されたサマリはこちらです。
+
+```md
+# 2026年1月13日 Claude Code セッションサマリー
+
+## 主な技術トピック
+
+### 1. マイクロサービスにおける認可設計
+- **テーマ**: BFF vs マイクロサービスでの認可の配置
+- **結論**: マイクロサービス側で認可を行うべき
+- **理由**:
+  - Zero Trust の観点（内部ネットワークを信頼しない）
+  - TOCTOU問題の回避（認可と操作のアトミック性）
+  - ドメイン知識の凝集（リソースを持つサービスが認可も判断）
+- **アーキテクチャ**: PDP/PEPパターン
+  - Permify (PDP): ポリシー管理・判定
+  - Service (PEP): 判定の呼び出し・結果の実行
+- **BFFの責務**: 認証・ルーティング・リクエスト変換のみ（薄いBFF）
+
+### 2. TypeScript-Go (tsgo) への移行
+- **目的**: type-checkの高速化
+- **実施内容**:
+  - 61パッケージのpackage.jsonで `tsc --noEmit` → `tsgo --noEmit` に変更
+  - `@typescript/native-preview` パッケージの導入
+- **遭遇した問題**:
+  - react-imaskライブラリとの型互換性問題（pnpmのhoistingによるimaskの二重インスタンス問題）
+  - tsgoとtscで型推論の挙動が異なるケース
+- **解決策**: `@ts-expect-error` で暫定対応
+- **学び**: tsgoはプレビュー段階で一部の複雑なunion型で差異が発生する可能性あり
+
+### 3. CI/CD最適化 - Blacksmith Runner選択
+- **検討内容**: 2vCPU vs 4vCPU のコストパフォーマンス
+- **判断ポイント**:
+  - 平均的な変更範囲（1-2パッケージなら2vCPU）
+  - メモリ使用量（4GB付近なら4vCPU推奨）
+  - TypeScriptはシングルスレッドでCPU並列効果は限定的
+- **提案**: まず2vCPUで計測し、必要に応じて4vCPUへ
+
+### 4. Turborepo キャッシュ戦略
+- **caching-for-turbo**: GitHubキャッシュをバックエンドにしたTurboリモートキャッシュ
+- **Blacksmith Sticky Disk**: より高速なローカルNVMEベースのキャッシュ
+- **結論**: Blacksmith使用時はSticky Diskのみで十分（caching-for-turbo不要）
+
+### 5. Biome CSS Linter の挙動差異
+- **問題**: `noDescendingSpecificity` ルールがVS Codeでは検出されるがCLIでは検出されない
+- **原因**: VS Code拡張機能とCLIで異なるBiomeバージョン/挙動の可能性
+- **状況**: 既知の問題として認識（GitHub issue存在）
+
+## ツール・設定関連
+
+### Claude Codeセッションログの保存設定
+- ディレクトリ構造を変更: `OBSIDIAN_DIR/YYYY-MM-DD/project-name/session-id.md`
+- セッションごとにマークダウンファイルを分離
+
+## 疑問点・課題
+
+1. **tsgoの型互換性**: pnpmのhoistingとtsgoの組み合わせで発生する型問題の根本解決
+2. **BiomeのCLI/VS Code差異**: 一貫した挙動を期待するならGitHub issueでのフォローアップが必要
+3. **CI Runner選択**: 実際のメトリクス計測によるデータドリブンな判断が推奨
+
+## キーワード
+
+- Zero Trust Architecture
+- PDP/PEP Pattern (Policy Decision Point / Policy Enforcement Point)
+- Permify / ReBAC
+- TypeScript-Go (tsgo) / @typescript/native-preview
+- Turborepo Remote Cache
+- Blacksmith Sticky Disk
+- Biome CSS Linter
+- pnpm hoisting
+```
+
+## まとめ
+Claude Codeの対話ログから１日のサマリをObsidianへ出力し、振り返りで活用できるスキルを作りました。
+まだサマリのフォーマットや内容、精度がイマイチな感じもするので少しずつチューニングしていこうと思います。
+
+日々の業務で兼務とかマルチタスクをしていると「今日何やったっけ？」となりがちなので、対話からサマリを生成してくれるのは結構便利でした。
+
+ブログネタの整理にもなりそうなので今年こそは少しずつアウトプット増やしていきたい…。
+
+ではまた。
+
+## 余談
+
+FujifilmのX100VIを購入して写活が捗っております。
+![](x100vi.webp)

@@ -11,3 +11,6 @@ pnpm-lock.yaml
 bun.lockb
 
 **/.DS_Store
+
+# Pre-processed assets (original images before conversion)
+app/pre-assets/
