@@ -12,7 +12,7 @@ export default function ThemeButton() {
   return (
     <button
       onClick={toggleTheme}
-      class="dark:text-white border dark:border-gray-600 h-10 w-10 flex justify-center rounded-md transition-opacity hover:opacity-70  shadow-sm items-center"
+      class="dark:text-white border dark:border-gray-600 h-10 w-10 flex justify-center rounded-md transition-opacity hover:opacity-70  shadow-sm items-center cursor-pointer"
       type="button"
     >
       <LightIcon />

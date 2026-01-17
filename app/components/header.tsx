@@ -11,7 +11,7 @@ export const Header = (props: Props) => {
         "text-center border-b px-4 mx-2 max-md:px-2 dark:border-gray-500 w-full h-16 tracking-widest dark:text-gray-100 flex justify-between items-center"
       }
     >
-      <a href="/" class={"flex items-center"}>
+      <a href="/" class={"flex items-center cursor-pointer"}>
         <h2 class={"font-semibold text-center text-2xl max-md:text-xl"}>
           {blogName}
         </h2>
@@ -24,7 +24,7 @@ export const Header = (props: Props) => {
           rel="noopener noreferrer"
         >
           <button
-            class="dark:text-white  h-10 w-10 flex justify-center rounded-xl transition-opacity hover:opacity-70 items-center"
+            class="dark:text-white  h-10 w-10 flex justify-center rounded-xl transition-opacity hover:opacity-70 items-center cursor-pointer"
             type="button"
           >
             <svg
@@ -44,7 +44,7 @@ export const Header = (props: Props) => {
           rel="noopener noreferrer"
         >
           <button
-            class="dark:text-white h-10 w-10 flex justify-center rounded-xl transition-opacity hover:opacity-70 items-center"
+            class="dark:text-white h-10 w-10 flex justify-center rounded-xl transition-opacity hover:opacity-70 items-center cursor-pointer"
             type="button"
           >
             <svg
