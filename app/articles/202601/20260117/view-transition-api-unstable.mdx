@@ -14,7 +14,7 @@ iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/
 View Transition APIでは今まで困難だったMPAの画面遷移でもアニメーションを使ったスムーズな遷移が可能になります。
 2023年にリリースされ、現在では（一部機能を除いて）全てのブラウザで対応しています。
 
-MPAでも遷移にアニメーションを付けれるということでHonoXのSSGで出来ている弊ブログにも導入してみます。
+MPAでも遷移にアニメーションを付けられるということで、HonoXのSSGで作られた弊ブログにも導入してみます。
 
 <ExternalOgp url="https://developer.mozilla.org/ja/docs/Web/API/View_Transition_API#%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E3%83%BC%E3%81%AE%E4%BA%92%E6%8F%9B%E6%80%A7" />
 
@@ -30,7 +30,7 @@ MPAでも遷移にアニメーションを付けれるということでHonoXの
 
 …のはずだったんですが。
 
-ローカルでビルドして挙動を見てみると発火するときと発火しないときがありました。
+ローカルでビルドして挙動を見てみると、発火するときとしないときがありました。
 ([実際の差分](https://github.com/mr04vv/blog/commit/efc37772eba8de9d83d7360f4f0e4b93ff114a9a))
 
 ![](view-transition.webp)
@@ -43,13 +43,13 @@ gifの映像でも分かるようにブラウザバックやブラウザフォ�
 原因が不明で色々調べていたのですが、[CSSファイルの読み込みをheadの先頭に持っていった](https://github.com/mr04vv/blog/commit/d03d164d24c6554fd3012c5555f5cb9e9ea65c26)ところ挙動が安定しました。
 
 ぶっちゃけ原因は良く分かってないです。
-Claude Code曰く、(htmlの)キャッシュが使われた場合、CSSの読み込みが描画に追いつかずに発火せずに遷移してしまうとのことです。
+Claude Code曰く、HTMLキャッシュが使われた場合はCSSの読み込みが描画に追いつかず、Transitionが発火しないまま遷移してしまうとのことです。
 
 ブラウザバックやブラウザフォワードで発火していたのは、おそらくバックフォワードキャッシュ（bfcache）によってCSSがメモリからロードされたため瞬時に反映されたことによるのではないかと推測しております。
 
 （知識不足で全然分からなかった…。）
 
-（その後試行錯誤した結果、 `<script src="/static/theme.js" />` の前後で挙動が変わることがわかりました。）
+（その後試行錯誤した結果、 `<script src="/static/theme.js" />` の前後で挙動に違いがあると判明しました。）
 
 ## おわりに
 
