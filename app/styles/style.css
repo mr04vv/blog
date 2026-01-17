@@ -4,6 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@view-transition {
+  navigation: auto;
+}
 html {
   @apply text-slate-800;
 }

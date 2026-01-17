@@ -1,0 +1,64 @@
+---
+title: CSSの読み込み順序を変えたらView Transition APIが安定した
+date: 2026-01-17T06:28:40.569Z
+description: View Transition APIで画面遷移をスムーズにしようと思ったのですが、なぜかうまく発火するときと発火しないときがあり、CSSの読み込みをheadの先頭に持っていったところ安定しました。
+iconUrl: https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Person%20shrugging/Default/Flat/person_shrugging_flat_default.svg
+---
+
+## はじめに
+
+重い腰を上げて弊ブログでもView Transition APIを使ってスムーズな画面遷移ができるようにしようと思い、試していたのですが、どうも挙動が安定せず調査したところCSSの読み込み順が原因でした。
+
+## View Transition API
+
+View Transition APIでは今まで困難だったMPAの画面遷移でもアニメーションを使ったスムーズな遷移が可能になります。
+2023年にリリースされ、現在では（一部機能を除いて）全てのブラウザで対応しています。
+
+MPAでも遷移にアニメーションを付けられるということで、HonoXのSSGで作られた弊ブログにも導入してみます。
+
+<ExternalOgp url="https://developer.mozilla.org/ja/docs/Web/API/View_Transition_API#%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E3%83%BC%E3%81%AE%E4%BA%92%E6%8F%9B%E6%80%A7" />
+
+## CSSを追加しても発火しなかった
+
+以下のCSSを追加すればひとまず遷移時にアニメーションが付きます。
+
+```css
+@view-transition {
+  navigation: auto;
+}
+```
+
+…のはずだったんですが。
+
+ローカルでビルドして挙動を見てみると、発火するときとしないときがありました。
+([実際の差分](https://github.com/mr04vv/blog/commit/efc37772eba8de9d83d7360f4f0e4b93ff114a9a))
+
+![](view-transition.webp)
+
+特に一度開いたページに対してTransitionが発火しないという事象が発生しました。
+gifの映像でも分かるようにブラウザバックやブラウザフォワード時には発火していました。
+
+## CSSの読み込みを先頭に持っていったら安定した
+
+原因が不明で色々調べていたのですが、[CSSファイルの読み込みをheadの先頭に持っていった](https://github.com/mr04vv/blog/commit/d03d164d24c6554fd3012c5555f5cb9e9ea65c26)ところ挙動が安定しました。
+
+ぶっちゃけ原因は良く分かってないです。
+Claude Code曰く、HTMLキャッシュが使われた場合はCSSの読み込みが描画に追いつかず、Transitionが発火しないまま遷移してしまうとのことです。
+
+ブラウザバックやブラウザフォワードで発火していたのは、おそらくバックフォワードキャッシュ（bfcache）によってCSSがメモリからロードされたため瞬時に反映されたことによるのではないかと推測しております。
+
+（知識不足で全然分からなかった…。）
+
+（その後試行錯誤した結果、 `<script src="/static/theme.js" />` の前後で挙動に違いがあると判明しました。）
+
+## おわりに
+
+CSSの読み込み順序に寄ってView Transition APIの挙動が変わってしまった事象について書きました。
+これは完全に僕の環境依存なので参考にならないかもしれませんが、もし同じような事象が起きた際に役立つかもしれません。
+
+もう少し原因深堀りしたいのですが体力切れしてしまったので、時間空いたときに調査してみようと思います。
+もし何か分かる人がいたら教えて下さい…。
+
+ではまた。
+
+![](mocha.webp)
