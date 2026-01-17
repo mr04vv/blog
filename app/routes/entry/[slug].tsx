@@ -38,6 +38,7 @@ export default createRoute(
     const hasLatestPosts = latestPosts.length > 0;
     const splitedTitle = parser.parse(post?.frontmatter?.title ?? "");
     const titleLen = pageTitle.length;
+
     return c.render(
       <div>
         <div class={"flex flex-col mb-10 items-center"}>
@@ -46,6 +47,7 @@ export default createRoute(
             class={`text-center leading-tight text-3xl mb-0 mt-6 pb-2 font-bold flex justify-center md:auto-phrase ${
               titleLen > 20 && "md:w-[90%]"
             }`}
+            style={{ viewTransitionName: `title-${slug}` }}
           >
             {splitedTitle}
           </h1>
@@ -87,6 +89,7 @@ export default createRoute(
                     title={post.frontmatter?.title || ""}
                     description={post.frontmatter?.description || ""}
                     iconUrl={post.frontmatter?.iconUrl || ""}
+                    disableViewTransition
                   />
                 </Fragment>
               ))}
