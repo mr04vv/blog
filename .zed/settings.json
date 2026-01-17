@@ -1,0 +1,33 @@
+{
+  "format_on_save": "on",
+  "formatter": {
+    "external": {
+      "command": "node_modules/.bin/biome",
+      "arguments": ["format", "--stdin-file-path", "{buffer_path}"]
+    }
+  },
+  "lsp": {
+    "biome": {
+      "binary": {
+        "path": "node_modules/.bin/biome"
+      }
+    }
+  },
+  "languages": {
+    "JavaScript": {
+      "language_servers": ["biome", "..."]
+    },
+    "TypeScript": {
+      "language_servers": ["biome", "!eslint", "..."]
+    },
+    "TSX": {
+      "language_servers": ["biome", "!eslint", "..."]
+    },
+    "JSON": {
+      "language_servers": ["biome", "..."]
+    },
+    "CSS": {
+      "language_servers": ["biome", "..."]
+    }
+  }
+}

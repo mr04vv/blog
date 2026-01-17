@@ -51,7 +51,7 @@ body {
   @apply text-base leading-7 my-4;
 }
 
-.markdown blockquote > p{
+.markdown blockquote > p {
   @apply text-sm;
 }
 
@@ -130,7 +130,6 @@ body {
 .source {
   @apply text-right italic;
 }
-
 
 .data-footnote-backref {
   @apply text-sm;
