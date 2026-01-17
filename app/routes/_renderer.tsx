@@ -21,6 +21,11 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content={description} />
+        {import.meta.env.PROD ? (
+          <link href="/styles/style.css" rel="stylesheet" />
+        ) : (
+          <link href={styles} rel="stylesheet" />
+        )}
         {import.meta.env.VITE_ENV === "production" ? (
           <>
             <meta
@@ -61,11 +66,6 @@ export default jsxRenderer(({ children, title, entryName, frontmatter }) => {
         <title>{pageTitle}</title>
         <Script src="/app/client.ts" async />
         <Style />
-        {import.meta.env.PROD ? (
-          <link href="/styles/style.css" rel="stylesheet" />
-        ) : (
-          <link href={styles} rel="stylesheet" />
-        )}
       </head>
       <body
         class={
