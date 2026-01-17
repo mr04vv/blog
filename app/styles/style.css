@@ -1,8 +1,8 @@
 @import "./syntax-highlight.css";
 
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @view-transition {
   navigation: auto;
