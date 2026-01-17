@@ -26,7 +26,9 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       ssg({ entry }),
-      honox({}),
+      honox({
+        client: { input: ["/app/client.ts"] },
+      }),
       mdx({
         jsxImportSource: "hono/jsx",
         providerImportSource: "./app/lib/mdxComponents",
