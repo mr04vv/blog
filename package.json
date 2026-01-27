@@ -25,7 +25,7 @@
     "@resvg/resvg-js": "2.6.2",
     "budoux": "0.7.0",
     "framer-motion": "12.29.2",
-    "hono": "4.11.6",
+    "hono": "4.11.7",
     "honox": "0.1.53",
     "jsdom": "27.4.0",
     "lodash": "4.17.23",
