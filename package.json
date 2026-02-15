@@ -27,7 +27,7 @@
     "framer-motion": "12.34.0",
     "hono": "4.11.9",
     "honox": "0.1.53",
-    "jsdom": "27.4.0",
+    "jsdom": "28.1.0",
     "lodash": "4.17.23",
     "motion": "12.34.0",
     "rehype-highlight": "7.0.2",
