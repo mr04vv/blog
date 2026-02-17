@@ -24,12 +24,12 @@
     "@mdx-js/rollup": "3.1.1",
     "@resvg/resvg-js": "2.6.2",
     "budoux": "0.7.0",
-    "framer-motion": "12.34.0",
+    "framer-motion": "12.34.1",
     "hono": "4.11.9",
     "honox": "0.1.54",
     "jsdom": "28.1.0",
     "lodash": "4.17.23",
-    "motion": "12.34.0",
+    "motion": "12.34.1",
     "rehype-highlight": "7.0.2",
     "rehype-pretty-code": "0.14.1",
     "rehype-stringify": "10.0.1",
@@ -60,6 +60,6 @@
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "vite": "7.3.1",
     "vite-plugin-static-copy": "3.2.0",
-    "wrangler": "4.65.0"
+    "wrangler": "4.66.0"
   }
 }
