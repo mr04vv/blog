@@ -31,7 +31,7 @@
     "lodash": "4.17.23",
     "motion": "12.34.4",
     "rehype-highlight": "7.0.2",
-    "rehype-pretty-code": "0.14.1",
+    "rehype-pretty-code": "0.14.3",
     "rehype-stringify": "10.0.1",
     "remark-frontmatter": "5.0.0",
     "remark-gfm": "4.0.1",
