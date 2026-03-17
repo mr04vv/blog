@@ -29,7 +29,7 @@
     "honox": "0.1.55",
     "jsdom": "29.0.0",
     "lodash": "4.17.23",
-    "motion": "12.37.0",
+    "motion": "12.38.0",
     "rehype-highlight": "7.0.2",
     "rehype-pretty-code": "0.14.3",
     "rehype-stringify": "10.0.1",
