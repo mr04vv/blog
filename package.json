@@ -38,7 +38,7 @@
     "remark-mdx-frontmatter": "5.2.0",
     "remark-parse": "11.0.0",
     "remark-rehype": "11.1.2",
-    "satori": "0.25.0"
+    "satori": "0.26.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20260317.1",
@@ -60,6 +60,6 @@
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "vite": "8.0.1",
     "vite-plugin-static-copy": "3.3.0",
-    "wrangler": "4.75.0"
+    "wrangler": "4.76.0"
   }
 }
