@@ -28,7 +28,7 @@
     "hono": "4.12.9",
     "honox": "0.1.55",
     "jsdom": "29.0.1",
-    "lodash": "4.17.23",
+    "lodash": "4.18.1",
     "motion": "12.38.0",
     "rehype-highlight": "7.0.2",
     "rehype-pretty-code": "0.14.3",
