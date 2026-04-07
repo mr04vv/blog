@@ -25,9 +25,9 @@
     "@resvg/resvg-js": "2.6.2",
     "budoux": "0.8.1",
     "framer-motion": "12.38.0",
-    "hono": "4.12.10",
+    "hono": "4.12.12",
     "honox": "0.1.55",
-    "jsdom": "29.0.1",
+    "jsdom": "29.0.2",
     "lodash": "4.18.1",
     "motion": "12.38.0",
     "rehype-highlight": "7.0.2",
@@ -58,7 +58,7 @@
     "textlint-rule-ja-space-between-half-and-full-width": "2.4.2",
     "textlint-rule-preset-ja-spacing": "2.4.3",
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
-    "vite": "8.0.3",
+    "vite": "8.0.5",
     "vite-plugin-static-copy": "4.0.1",
     "wrangler": "4.80.0"
   }
