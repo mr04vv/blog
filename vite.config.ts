@@ -50,31 +50,8 @@ export default defineConfig(({ mode }) => {
         rehypePlugins: [rehypeStringify, [rehypePrettyCode, { theme: theme }]],
       }),
 
-      // 記事内の画像を特定のディレクトリに吐き出すように
-      // 参照：　https://github.com/p1ass/blog/blob/d5af3142bc4338d0a3164a9a1e28ef3812774fa7/vite.config.ts#L56-L80
       viteStaticCopy({
         targets: [
-          {
-            src: [
-              "./app/assets/**/*.png",
-              "./app/assets/**/*.jpg",
-              "./app/assets/**/*.jpeg",
-              "./app/assets/**/*.webp",
-              "./app/assets/**/*.gif",
-            ],
-            dest: "assets",
-            rename: (
-              _fileName: string,
-              _fileExtension: string,
-              fullPath: string,
-            ) => {
-              const destPath = normalizePath(
-                path.relative(__dirname, fullPath).replace(/^app\/.*\//, ""),
-              );
-              return destPath;
-            },
-            overwrite: false,
-          },
           {
             src: ["./app/theme.ts"],
             dest: "static",
