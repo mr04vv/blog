@@ -17,7 +17,7 @@
   },
   "private": true,
   "dependencies": {
-    "@biomejs/biome": "2.5.1",
+    "@biomejs/biome": "2.5.2",
     "@tailwindcss/postcss": "4.3.2",
     "@hono/react-renderer": "1.0.1",
     "@hono/vite-ssg": "0.3.3",
@@ -26,7 +26,7 @@
     "budoux": "0.8.4",
     "framer-motion": "12.42.2",
     "hono": "4.12.27",
-    "honox": "0.1.56",
+    "honox": "0.1.58",
     "jsdom": "29.1.1",
     "lodash": "4.18.1",
     "motion": "12.42.2",
@@ -41,7 +41,7 @@
     "satori": "0.26.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20260630.1",
+    "@cloudflare/workers-types": "4.20260701.1",
     "@hono/vite-cloudflare-pages": "0.4.3",
     "@hono/vite-dev-server": "0.26.0",
     "@textlint/textlint-plugin-markdown": "15.7.1",
